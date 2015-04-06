@@ -1,0 +1,5 @@
+DESC: This plugin is part of a tutorial <a href="https://github.com/jjeroennl/quantiweb/wiki/Tutorial:-Make-your-own-plugin">Learn more...</a>
+AUTHOR: Quantiweb
+WEBSITE: http://www.quantiweb.eu
+VERSION: A version number. Lets say 1.0
+BASE: 0.01

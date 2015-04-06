@@ -1,0 +1,5 @@
+DESC: Nieuws
+AUTHOR: Jeroen
+WEBSITE: http://www.jjeroen.nl
+VERSION: ALFA
+BASE: 0.01
