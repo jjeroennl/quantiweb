@@ -1,5 +1,4 @@
 <?php
-
 	function content_create_type($type, $aditional = null, $menu = 0, $way = 0){
 
 		$_type = db_escape($type);
@@ -39,6 +38,17 @@
 		}
 	}
 
+	function content_get_type_name($id){
+		$_id = db_escape($id);
+		$query = db_select("*", "content_types", array(
+			"type_id" => $_id
+		));
+		
+		while($row = db_grab($query)){
+			return $row['type'];
+		}
+	}
+
 	function content_get_way($type){
 		if(is_numeric($type)){
 			$query = db_select("*", "content_type", array(
@@ -61,30 +71,44 @@
 		//$sqlquery = db_select("*", "content", array(
 		//	"content " => "$_query"
 		//));
-		while($row = db_grab($sqlquery)){
-			return $row;
-		}
+		return $sqlquery;
 	}
 
-	function content_query($type = 00, $way = "static", $id = 0){
+	function content_query($type = 00, $way = "static", $id = 0, $status = 0){
 		$_type = db_escape($type);
 		$_way = db_escape($way);
 		$_id = db_escape($id);
+		$_status = db_escape($status);
 
 		if($_way == "static"){
 			if($_id != 0){
 				if($_type == 00){
-					$query = db_select("*", "content", array(
-						"status" => 1,
-						"content_id" => $_id
-					));
+					if($_status == 1){
+						$query = db_select("*", "content", array(
+							"content_id" => $_id
+						));
+					}
+					else{
+						$query = db_select("*", "content", array(
+							"status" => 1,
+							"content_id" => $_id
+						));	
+					}
 				}
 				else{
-					$query = db_select("*", "content", array(
-						"type" => $_type,
-						"status" => 1,
-						"content_id" => $_id
-					));
+					if($_status == 1){
+						$query = db_select("*", "content", array(
+							"type" => $_type,
+							"content_id" => $_id
+						));
+					}
+					else{
+						$query = db_select("*", "content", array(
+							"type" => $_type,
+							"status" => 1,
+							"content_id" => $_id
+						));
+					}
 				}
 
 
@@ -97,19 +121,37 @@
 		}
 		elseif($_way == "loop"){
 			if($_type == 00){
-				$query = db_select("*", "content", array(
-					"status" => 1
-				),0, array(
-					"content_id" => "DESC"
-				));
+				if($_status == 1){
+					$query = db_select("*", "content", array(
+						"1" => "1"
+					),0, array(
+						"content_id" => "DESC"
+					));
+				}
+				else{
+					$query = db_select("*", "content", array(
+						"status" => 1
+					),0, array(
+						"content_id" => "DESC"
+					));
+				}
 			}
 			else{
-				$query = db_select("*", "content", array(
-					"type" => $_type,
-					"status" => 1
-				),0, array(
-					"content_id" => "DESC"
-				));
+				if($_status == 1){
+					$query = db_select("*", "content", array(
+						"type" => $_type,
+					),0, array(
+						"content_id" => "DESC"
+					));
+				}
+				else{
+					$query = db_select("*", "content", array(
+						"type" => $_type,
+						"status" => 1
+					),0, array(
+						"content_id" => "DESC"
+					));
+				}
 			}
 
 
@@ -160,16 +202,20 @@
 
 				while($row = db_grab($query)){
 					echo $row['content'];
-				}
-			}
-			else{
-				$query = content_query(content_get_type($id), "loop", $id);
-
-				while($row = db_grab($query)){
-					echo "<h2>" . $row['title'] . "</h2>";
-					echo substr($row['content'], 0, 500);
-					echo "<br>" . content_readmore($row['content_id']);
-                    $additionalfunction = content_getadditionalfunction($row['type']);
+					$additionalfunction = content_getadditionalfunction($row['type']);
+                    $query = db_select("*", "content", array(
+                        "content_id" => $id
+                    ));
+                    while($row2 = db_grab($query)){
+                        $views = $row2['views'];
+                        $views++;
+                    }
+                    db_update("content", array(
+                        "views" => $views
+                    ),
+                    array(
+                        "content_id" => $id
+                    ));
                     if(function_exists($additionalfunction)){
                         $additionalfunction();
                     }
@@ -177,6 +223,26 @@
                         
                     }
 				}
+			}
+			else{
+				$query = content_query(content_get_type($id), "loop", $id);
+
+				while($row = db_grab($query)){
+					echo "<h2>" . $row['title'] . "</h2>";
+					echo substr($row['content'], 0, 500) . "...";
+					echo "</p><br>" . content_readmore($row['content_id']);
+                    
+				}
+			}
+		}
+		elseif(isset($_GET['s'])){
+			$getresult = str_replace("%20", " " ,$_GET['s']);
+			$result = content_search($getresult);	
+			while($row = db_grab($result)){
+				echo "<h2>" . $row['title'] . "</h2>";
+				echo substr($row['content'], 0, 500) . "...";
+				echo "<br>" . content_readmore($row['content_id']);
+
 			}
 		}
 		else{
@@ -189,6 +255,22 @@
 			}
 		}
 
+	}
+
+	function content_get_sidebar(){
+		//TODO: editable!
+		echo "<h2>Search</h2>";
+		?>
+		<form method="GET" action="index.php">
+			<div class="input-group">
+				<input type="text" name="s" class="form-control" placeholder="Search for...">
+    			<span class="input-group-btn">
+        			<button class="btn btn-default" type="submit">Go!</button>
+      			</span>
+    		</div><!-- /input-group -->
+			
+		</form>
+		<?php
 	}
 
     function content_getadditionalfunction($contenttype){

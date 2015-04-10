@@ -1,14 +1,16 @@
 <?php
     system_check();
 ?>
+
 <div role="tabpanel">
 
   <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="nav nav-tabs" id="nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#general" aria-controls="home" role="tab" data-toggle="tab">General</a></li>
-    <li role="presentation"><a href="#users" aria-controls="profile" role="tab" data-toggle="tab">Users</a></li>
-    <li role="presentation"><a href="#plugin" aria-controls="messages" role="tab" data-toggle="tab">Plugin</a></li>
-    <li role="presentation"><a href="#content" aria-controls="settings" role="tab" data-toggle="tab">Content</a></li>
+    <li role="presentation"><a href="#users" aria-controls="users" role="tab" data-toggle="tab">Users</a></li>
+    <li role="presentation"><a href="#plugin" aria-controls="plugin" role="tab" data-toggle="tab">Plugin</a></li>
+
+    <li role="presentation"><a href="#content" aria-controls="content" role="tab" data-toggle="tab">Content</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -40,3 +42,12 @@
   </div>
 
 </div>
+<script>
+$( document ).ready(function() {
+    var url = document.location.toString();
+    var spliturl = url.split("#")[1];
+    var newdiv = '#nav-tabs a[href="' + spliturl + '"]';
+    $('#nav-tabs a[href="profile"]').tab('show');
+
+});
+</script>

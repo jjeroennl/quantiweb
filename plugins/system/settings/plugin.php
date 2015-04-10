@@ -1,12 +1,12 @@
 <?php
     system_check();
-    if(isset($_POST['generalpost'])){
+    if(isset($_POST['pluginpost'])){
          if(isset($_POST['indexpage'])){
              _system_setindex($_POST['indexpage']);
          }
     }
 ?>
-<form method="post">
+<form method="post" action="admin.php?p=<?php echo $_GET['p'];?>&tab=plugin">
 <h4>Active plugins</h4>
 <ul>
 <?php
@@ -29,6 +29,7 @@
 <select class="form-control" name="indexpage">
 <?php
     $index_array = explode(",", system_getsetting("wantindex"));
+    echo "<option>" . system_getsetting("index") .  "</option>";
     foreach($index_array as $indexes){
         echo "<option>" . $indexes . "</option>";
     }

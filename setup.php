@@ -254,6 +254,7 @@ define('LOCAL_INSTALL_LOCATION', '../" . LOCAL_INSTALL_LOCATION . "');
 				"type" => "INT",
 				"status" => "INT DEFAULT 0",
 				"date" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                "views" => "INT",
 				"content_id" => "INT NOT NULL AUTO_INCREMENT "
 			), "content_id");
 
@@ -268,7 +269,7 @@ define('LOCAL_INSTALL_LOCATION', '../" . LOCAL_INSTALL_LOCATION . "');
 			), "user_id");
 
 			//register admin user
-			system_register($_POST['register-username'], $_POST['register-password'], $_POST['register-email']);
+			system_register($_POST['register-username'], $_POST['register-password'], $_POST['register-email'], "ADMIN");
 
 			//create admin DB
 			db_create("admin", array(

@@ -12,5 +12,9 @@
 				<!-- -- Blog Post 1 ---->
 				<?php echo content_get_content();?>
 			</div>
+			<div class="col-lg-4">
+				<!-- -- Blog Post 1 ---->
+				<?php echo content_get_sidebar();?>
+			</div>
 		</div>
 	</div>

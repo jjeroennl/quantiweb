@@ -166,7 +166,7 @@
 	function system_password_salt($password, $username, $registrationdate, $email){
 		$_username = hash("sha512", $username);
 		$date = hash("sha512", date("Y-m-d H:i:s", strtotime($registrationdate . "+" . strlen($email) * strlen($password) . "days")));
-		$date = date("Y-m-d H:i:s", strtotime($registrationdate . "+" . strlen($email) * strlen($password) . "days"));
+		$date = date("Y-m-d H:i:s", strtotime($date . $registrationdate . "+" . strlen($email) * strlen($password) . "days"));
 		$date = date("Y-m-d H:i:s", strtotime($date . "+" . strlen($username)*strlen($email)*1000 . "seconds"));
 		$_email = hash("sha512", $email);
 		return $final_hash = hash("sha512", $_username . $date . $password . $_email);
@@ -188,22 +188,35 @@
 		}
 	}
 
-	function system_register($_username, $_password, $_email){
+	function system_register($_username, $_password, $_email, $admin = "no"){
 		$_date = date("Y-m-d H:i:s");
 		$query = db_select("user_id", "users", array(
 			"username" => $_username
 		));
 		if(db_numrows($query) == 0){
-			$_password = system_password_salt($_password, $_username, $_date, $_email);
-			$default_role = system_getsetting("default_role");
-			db_insert("users", array(
-				"username" => $_username,
-				"password" => $_password,
-				"email" => $_email,
-				"registrationdate" => $_date,
-				"role" => $default_role
-			));
-			header("location: admin.php?loginform");
+            if($admin == "no"){
+			     $_password = system_password_salt($_password, $_username, $_date, $_email);
+			     $default_role = system_getsetting("default_role");
+			     db_insert("users", array(
+			     	"username" => $_username,
+			     	"password" => $_password,
+			     	"email" => $_email,
+			     	"registrationdate" => $_date,
+			     	"role" => $default_role
+			     ));
+			     header("location: admin.php?loginform");
+            }
+            else{
+                 $_password = system_password_salt($_password, $_username, $_date, $_email);
+			     db_insert("users", array(
+			     	"username" => $_username,
+			     	"password" => $_password,
+			     	"email" => $_email,
+			     	"registrationdate" => $_date,
+			     	"role" => 2
+			     ));
+			     header("location: admin.php?loginform");
+            }
 		}
 		else{
 			header("location: admin.php?loginform&registerfailed");
