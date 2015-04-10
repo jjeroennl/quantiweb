@@ -58,6 +58,7 @@
 							<td>
 								<b><?php echo substr($row['title'], 0, 51);?></b>
 							</td>
+							<td class="event-venue hidden-xs"><i class="icon-map-marker"></i><?php echo $row['views'];?></td>
 							<td class="event-venue hidden-xs"><i class="icon-map-marker"></i><?php echo ucfirst(system_getuserinfo($row['author'], "username"));?></td>
 
 							<td><a href="#" data-toggle="modal" data-target="#remove_<?php echo $row['content_id']; ?>" class="btn btn-red btn-sm"><i class="fa  fa-trash-o"></i></a> <a href="admin.php?p=<?php echo db_escape($_GET['p'])?>&edit=<?php echo $row['content_id'];?>" class="btn btn-blue btn-sm event-more"><i class="fa  fa-pencil"></i></a></td>
