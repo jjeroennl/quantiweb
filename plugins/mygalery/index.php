@@ -6,6 +6,6 @@ function mygalery_install(){
 }
 function mygalery_admin(){
   include 'mygalery_admin.php';
-    mysqli_connect
+  content_delete();
 }
 ?>

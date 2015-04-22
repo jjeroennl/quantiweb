@@ -11,7 +11,18 @@
 			<div class="col-lg-8">
 				<!-- -- Blog Post 1 ---->
 				<?php echo content_get_content();?>
-			</div>
+			</div></div>
+
+			<?php
+				if(!isset($_GET['p'])){
+					echo '</div></div>';
+				}
+				if(isset($_GET['p'])){
+					if($_GET['p'] == 'Binnenland'){
+						echo '</div>';
+					}
+				}
+			?>
 			<div class="col-lg-4">
 				<!-- -- Blog Post 1 ---->
 				<?php echo content_get_sidebar();?>

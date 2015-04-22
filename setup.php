@@ -9,7 +9,7 @@
     define('FORK_NAME', 'Quantiweb');
     define('OFFICIAL_VERSION', '0.02');
     define('INSTALL_LOCATION', $url);
-    define('LOCAL_INSTALL_LOCATION', dirname(__FILENAME__));
+    define('LOCAL_INSTALL_LOCATION', dirname("__FILENAME__"));
 
     $pagename = "Setup";
 	include("themes/admin/header.php");
