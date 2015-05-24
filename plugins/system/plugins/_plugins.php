@@ -53,121 +53,80 @@
 		include 'pluginconfig.php';
 	}
 	
-	function plugin_scan($plugin){
-		//score points
-		$score = 10;
-
-		
-	
-		 $return = _plugin_terms($plugin);
-		
-
-		
-		
-		echo "<ul>";
-		if(isset($return["db"])){
-			echo "<li>Get content out of the database</li>";
-			$score = $score - 1;
-		}
-		if(isset($return["setting"])){
-			echo "<li>Get settings from the system</li>";
-		}
-		if(isset($return["db_delete"])){
-			echo "<li>Delete content from your database.</li>";
-			$score = $score - 6;
-		}
-			if(isset($return["content_"])){
-			echo "<li>Create, modify or delete content</li>";
-			
-		}
-		
-		echo "</ul>";
-		
-		if(!in_array(1, $return)){
-			echo "This plugin requires no access to any " . OFFICIAL_NAME . " or database function.";
-		}
-		//echo $score;
-		//return $clearance;
-	}
-	
-	function _plugin_score($plugin){
-		$score = 10;
-		$return['db'] = 0;
-		$return['setting'] = 0;
-		$return['mysql'] = 0;
-		$return['mysqli'] = 0;
-		$return['db_delete'] = 0;
-		$return['content_'] = 0;
-		
-		$return = _plugin_terms($plugin);
-		if(isset($return["db"])){
-			$score = $score - 1;
-		}
-		if(isset($return["setting"])){
-
-		}
-		if(isset($return["db_delete"])){
-			
-			$score = $score - 6;
-		}
-		if(isset($return["content_"])){
-			
-			$score = $score - 1;
-		}
-		
-		return $score;
-	}
-	
-	function _plugin_terms($plugin){
-		$return['db'] = 0;
-		$return['setting'] = 0;
-		$return['mysql'] = 0;
-		$return['mysqli'] = 0;
-		$return['db_delete'] = 0;
-		$return['content_'] = 0;
-		$return['content_delete'] = 0;
-		$clearance = 1;
-		
-		$return = array();
-		
+function plugin_check($plugin){
 		$code = _plugin_get($plugin);
-		
-		if(strpos($code, "db_")){
-			$return['db'] = 1;
+		$totalscore = 10;
+		$containsbad = array();
+
+		$bad_words = array(
+			"db" => "1",
+			"system_" => "0",
+			"db_delete" => "6",
+			"content_" => "1",
+			"exec" => "7",
+			"passthru" => "7",
+			"shell_exec" => "7",
+			"popen" => "5",
+			"assert" => "5",
+			"eval" => "5",
+			"fopen" => "5",
+			"tmpfile" => "5",
+			"move_uploaded_file" => "5"
+		);
+
+		foreach ($bad_words as $badword=>$score) {
+			if(strpos($code, $badword) !== FALSE) {
+				array_push($containsbad, $badword);
+				$totalscore -= $score;
+			}
 		}
 		
-		if(strpos($code, "system_setsetting") || strpos($code, "system_getsetting") ){
-			$return['setting'] = 1;
-		}
-		if(strpos($code, "db_delete")){
-			$return['db_delete'] = 1;
-		}
-		if(strpos($code, "content_")){
-			$return['content_'] = 1;
-		}
-		if(strpos($code, "mysql_connect")){
-			$return['mysql'] = 1;
-		}
-		if(strpos($code, "mysqli_connect") || strpos($code, "mysqli_real_connect") ){
-			$return['mysqli'] = 1;
+		if($totalscore <= 0){
+			$totalscore = 0;
 		}
 		
-		return $return;
-		
+		if(func_num_args() == 2){
+			return $totalscore;
+		}
+		else{
+			return $containsbad;
+		}
+
+	}
+	
+	function plugin_explain($badword){
+		$explain = array(
+			"db" => "Read and write from/to your database system",
+			"system_" => "Use system functions",
+			"db_delete" => "Delete entries in your database system",
+			"content_" => "Read, write or delete content",
+			"exec" => "Execute commands on your server",
+			"passthru" => "Execute commands on your server without verification",
+			"popen" => "Read and write files",
+			"assert" => "Posibly stop quantiweb from working",
+			"eval" => "Execute commands on your website",
+			"fopen" => "Read and write files",
+			"tmpfile" => "Read and write temporary files",
+			"move_uploaded_file" => "Move temporary files",
+		);
+		return $explain[$badword];
 	}
 	
 	function _plugin_get($plugin){
-		
-		$urls = scandir("plugins/" . $plugin);
-		
+		$folderstoscan = plugin_scanfolder($plugin);
 		$code = "";
-		foreach($urls as $urlx){
-			$url = "plugins/" . $plugin . "/" .$urlx;
-			if (substr($url, -4) == '.php' || substr($url, -4) == '.PHP') {
-				if(file_exists($url)){
-					$myfile = fopen($url, "r") ;
-					$code = $code . fread($myfile,filesize($url));
-					fclose($myfile);
+		foreach($folderstoscan as $folder){
+			$urls = scandir($folder);
+
+			foreach($urls as $urlx){
+				$url = $folder . '/' . $urlx;
+				if (substr($url, -4) == '.php' || substr($url, -4) == '.PHP') {
+				
+					if(file_exists($url)){
+						$myfile = fopen($url, "r") ;
+						$code = $code . fread($myfile,filesize($url));
+						fclose($myfile);
+					}
 				}
 			}
 		}
@@ -176,7 +135,36 @@
 		return $code;
 	}
 	
-	function plugin_check_mate($plugin){
+	function plugin_scanfolder($plugin){
+		$folders = array("plugins/" . $plugin);
+		
+		$badloop = 1;
+		
+		while($badloop != 0){
+			if(isset($folders[$badloop - 1])){
+				$scan = scandir($folders[$badloop - 1 ]);
+				foreach($scan as $results){
+					if($results != '.' && $results != '..'){
+						if(is_dir($folders[$badloop - 1 ].'/'.$results)){
+							array_push($folders, $folders[$badloop - 1 ] . '/' .$results);		
+						}
+					}
+				}
+				$badloop++;
+			}
+			else{
+				$badloop = 0;
+			}
+
+		}
+		return $folders;
+	}
+	
+	function plugin_recursivefolder($folders){
+		
+	}
+	
+	function plugin_checkmate($plugin){
 		$code = _plugin_get($plugin);
 		
 		if(strpos($code, "mysqli_connect") || strpos($code, "mysql_connect") || strpos($code, "mysqli_real_connect") || strpos($code, "new pdo")){

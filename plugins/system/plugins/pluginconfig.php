@@ -1,47 +1,39 @@
 <?php
-	function activatemodal($plugin){
-		if(plugin_check_mate($plugin)){
+	function activateModal($plugin){
+		if(plugin_checkmate($plugin)){
 			echo '
 					<div class="modal fade" style="text-align: left;"id="activatemodal_' . $plugin . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
 					';
-					$div = "";
-					if(_plugin_score($plugin) >= 6){
-						$div = "alert-success";
-					}
-					if(_plugin_score($plugin) >= 2 && _plugin_score($plugin) <= 5){
-						$div = "alert-warning";
-					}
-					if(_plugin_score($plugin) <=4){
-						$div = "alert-danger";
-					}
-					if(_plugin_score($plugin)  == 10 || _plugin_score($plugin)  == 9){
-						$div = "alert-info";
-					}
+					
 					echo '
 						<div class="modal-dialog">
 							<div class="modal-content">
-							<div class="modal-header ' . $div . '">
+							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 								<h4 class="modal-title" id="myModalLabel"><i class="fa fa-puzzle-piece"></i> Activate ' . ucfirst($plugin) . '</h4>
 							</div>
 							<div class="modal-body">
 							<div class="col-sm-9">
-								This plugin requires access to the following items:
+								This plugin wants to:
 
 							';
-							plugin_scan($plugin);
+							
+							foreach(plugin_check($plugin) as $bad){
+								echo "<li>" .plugin_explain($bad) . "</li>";
+							}
+							
 							echo '
 								</div>
 								<div class="col-sm-3">
 								<h1 style="font-size: 70px;">
 							';
-							echo _plugin_score($plugin);
+							echo plugin_check($plugin,1);
 							echo '</h1>
 								</div>
 								<div class="clearfix"></div>
 							</div>
-							<div class="modal-footer ' . $div . '">
+							<div class="modal-footer ">
 								<button type="button" class="btn btn" data-dismiss="modal">Cancel</button>
 								<a href="admin.php?p=' . db_escape($_GET['p']) . '&activate=' . $plugin . '" class="btn btn-default">Activate</a>
 
