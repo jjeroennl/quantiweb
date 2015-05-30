@@ -70,7 +70,6 @@
 	}
 	elseif(isset($_GET['set_db'])){
 		//Databaseconfig
-
 		//databasename
 		define('DB_NAME', $_POST['db_name']);
 		//username
@@ -82,7 +81,14 @@
 		include 'plugins/system/db/_db.php';
 	
 			$status = 1;
-
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()\'"';
+		$charactersLength = strlen($characters);
+		$length = 28;
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		$randomString = hash("sha512", $randomString);
 			$data = "<?php
 //Databaseconfig
 
@@ -102,9 +108,11 @@ define('FORK_NAME', '". FORK_NAME ."');
 define('OFFICIAL_VERSION', '". OFFICIAL_VERSION ."');
 define('INSTALL_LOCATION', '" . $_POST['f_location'] . "');
 define('LOCAL_INSTALL_LOCATION', '../" . LOCAL_INSTALL_LOCATION . "');
+define('INSTALL_SALT', '" . $randomString. "');
 
 \$navpage = array();
 ?>";
+unset($randomString);
 			$file = fopen("config.php", "w");
 			if(fwrite($file, $data)){
 				$db_status = 1;

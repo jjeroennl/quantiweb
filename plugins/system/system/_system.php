@@ -169,7 +169,7 @@
 		$date = date("Y-m-d H:i:s", strtotime($date . $registrationdate . "+" . strlen($email) * strlen($password) . "days"));
 		$date = date("Y-m-d H:i:s", strtotime($date . "+" . strlen($username)*strlen($email)*1000 . "seconds"));
 		$_email = hash("sha512", $email);
-		return $final_hash = hash("sha512", $_username . $date . $password . $_email);
+		return $final_hash = hash("sha512", $_username . $date . $password . INSTALL_SALT  . $_email);
 	}
 
 	function system_loginform(){
