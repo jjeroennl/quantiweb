@@ -80,7 +80,7 @@
 		//hostname
 		define('DB_HOST', $_POST['db_host']);
 		include 'plugins/system/db/_db.php';
-		if(db_check() == 1){
+	
 			$status = 1;
 
 			$data = "<?php
@@ -115,12 +115,7 @@ define('LOCAL_INSTALL_LOCATION', '../" . LOCAL_INSTALL_LOCATION . "');
 				$_SESSION['db'] = 1;
 			}
 			fclose($file);
-		}
-		else{
-			$status = 0;
-			echo "something went wrong!";
-		}
-
+		
 		if($db_status == 2){
 			?>
 			<div class="section section-breadcrumbs">

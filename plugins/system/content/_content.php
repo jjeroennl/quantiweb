@@ -1,18 +1,16 @@
 <?php
 	function content_create_type($type, $aditional = null, $menu = 0, $way = 0){
-
-		$_type = db_escape($type);
-		if(db_entry_exist("content_types", array("type" => $_type)) == 0){
+		if(db_entry_exist("content_types", array("type" => $type)) == 0){
 			if($aditional == null){
 				db_insert("content_types", array(
-					"type" => $_type,
+					"type" => $type,
 					"menu" => $menu,
 					"way" => $way
 				));
 			}
 			else{
 				db_insert("content_types", array(
-					"type" => $_type,
+					"type" => $type,
 					"menu" => $menu,
 					"way" => $way,
 					"aditional" => $aditional
@@ -24,9 +22,8 @@
 
 
 	function content_get_type($name){
-		$_name = db_escape($name);
 		$query = db_select("*", "content_types", array(
-			"type" => $_name
+			"type" => $name
 		));
 
 		if(db_numrows($query) == 0){
@@ -39,9 +36,8 @@
 	}
 
 	function content_get_type_name($id){
-		$_id = db_escape($id);
 		$query = db_select("*", "content_types", array(
-			"type_id" => $_id
+			"type_id" => $id
 		));
 		
 		while($row = db_grab($query)){
@@ -68,45 +64,37 @@
 	function content_search($query){
 		$_query = "%" . $query . "%";
 		$sqlquery = db_custom("SELECT * FROM content WHERE content LIKE '$_query'");
-		//$sqlquery = db_select("*", "content", array(
-		//	"content " => "$_query"
-		//));
 		return $sqlquery;
 	}
 
 	function content_query($type = 00, $way = "static", $id = 0, $status = 0){
-		$_type = db_escape($type);
-		$_way = db_escape($way);
-		$_id = db_escape($id);
-		$_status = db_escape($status);
-
-		if($_way == "static"){
-			if($_id != 0){
-				if($_type == 00){
-					if($_status == 1){
+		if($way == "static"){
+			if($id != 0){
+				if($type == 00){
+					if($status == 1){
 						$query = db_select("*", "content", array(
-							"content_id" => $_id
+							"content_id" => $id
 						));
 					}
 					else{
 						$query = db_select("*", "content", array(
 							"status" => 1,
-							"content_id" => $_id
+							"content_id" => $id
 						));	
 					}
 				}
 				else{
-					if($_status == 1){
+					if($status == 1){
 						$query = db_select("*", "content", array(
-							"type" => $_type,
-							"content_id" => $_id
+							"type" => $type,
+							"content_id" => $id
 						));
 					}
 					else{
 						$query = db_select("*", "content", array(
-							"type" => $_type,
+							"type" => $type,
 							"status" => 1,
-							"content_id" => $_id
+							"content_id" => $id
 						));
 					}
 				}
@@ -119,9 +107,9 @@
 				die("Error: no post");
 			}
 		}
-		elseif($_way == "loop"){
-			if($_type == 00){
-				if($_status == 1){
+		elseif($way == "loop"){
+			if($type == 00){
+				if($status == 1){
 					$query = db_select("*", "content", array(
 						"1" => "1"
 					),0, array(
@@ -137,16 +125,16 @@
 				}
 			}
 			else{
-				if($_status == 1){
+				if($status == 1){
 					$query = db_select("*", "content", array(
-						"type" => $_type,
+						"type" => $type,
 					),0, array(
 						"content_id" => "DESC"
 					));
 				}
 				else{
 					$query = db_select("*", "content", array(
-						"type" => $_type,
+						"type" => $type,
 						"status" => 1
 					),0, array(
 						"content_id" => "DESC"
@@ -180,7 +168,7 @@
 					"content_id" => $page
 				));
 
-				while($row2 = mysqli_fetch_array($get_pages)){
+				while($row2 = db_grab($get_pages)){
 					return $row2['title'];
 				}
 			}

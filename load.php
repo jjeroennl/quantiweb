@@ -8,7 +8,7 @@
 	//grab database system
 	include 'plugins/system/db/_db.php';
 	
-	if(db_check() == 0){
+	if(db_table_exist("system_settings") == 0){
 		header("Location: setup.php?db");
 	}
 	
