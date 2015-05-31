@@ -153,28 +153,12 @@
 			$id = $_GET['p'];
 			if(is_numeric($id)){
 				$query = content_query(00, "static", $id);
-
 				while($row = db_grab($query)){
 					echo $row['content'];
-					$additionalfunction = content_getadditionalfunction($row['type']);
-                    $query = db_select("*", "content", array(
-                        "content_id" => $id
-                    ));
-                    while($row2 = db_grab($query)){
-                        $views = $row2['views'];
-                        $views++;
-                    }
-                    db_update("content", array(
-                        "views" => $views
-                    ),
-                    array(
-                        "content_id" => $id
-                    ));
+					content_addview($id);
+                    $additionalfunction = content_getadditionalfunction($row['type']);
                     if(function_exists($additionalfunction)){
                         $additionalfunction();
-                    }
-                    else{
-                        
                     }
 				}
 			}
@@ -190,27 +174,51 @@
 			}
 		}
 		elseif(isset($_GET['s'])){
-			$getresult = str_replace("%20", " " ,$_GET['s']);
-			$result = content_search($getresult);	
-			while($row = db_grab($result)){
-				echo "<h2>" . $row['title'] . "</h2>";
-				echo substr($row['content'], 0, 500) . "...";
-				echo "<br>" . content_readmore($row['content_id']);
-
-			}
+			content_makeSearchPage($query);
 		}
 		else{
-			$function = system_getsetting("index");
-			if(function_exists($function)){
-				$function();
-			}
-			else{
-				echo "You don't have any plugins activated. <a href=\"admin.php\">Activate a plugin</a>";
-			}
+			content_makeIndexPage();
 		}
 
 	}
+	
+	function content_makeSearchPage($query){
+		$getresult = str_replace("%20", " " , $query);
+		$result = content_search($getresult);	
+		while($row = db_grab($result)){
+			echo "<h2>" . $row['title'] . "</h2>";
+			echo substr($row['content'], 0, 500) . "...";
+			echo "<br>" . content_readmore($row['content_id']);
 
+		}
+	}
+	
+	function content_makeIndexPage(){
+		$function = system_getsetting("index");
+		if(function_exists($function)){
+			$function();
+		}
+		else{
+			echo "You don't have any plugins activated. <a href=\"admin.php\">Activate a plugin</a>";
+		}
+	}
+
+	function content_addView($id){
+		$query = db_select("*", "content", array(
+            "content_id" => $id
+        ));
+        while($row2 = db_grab($query)){
+            $views = $row2['views'];
+            $views++;
+        }
+		db_update("content", array(
+					"views" => $views
+				),
+				array(
+					"content_id" => $id
+				));
+	}
+	
 	function content_get_sidebar(){
 		//TODO: editable!
 		echo "<h2>Search</h2>";
