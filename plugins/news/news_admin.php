@@ -32,7 +32,7 @@
 	function nieuws_normal_view(){
 
 
-		$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 1);
+		$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 0);
 
 			if(db_numrows($content) == 0){
 				echo 'You don\'t have any posts yet. <a href="admin.php?p=' . db_escape($_GET['p']) . '&createnew">Create one?</a>';
@@ -125,9 +125,10 @@
 
 	function nieuws_edit(){
 		$post = db_escape($_GET['edit']);
-		$content = content_query(00, "static", $post, 1);
+		$content = content_query(00, "static", $post, 0);
 
 		while($row = db_grab($content)){
+
 			$title = $row['title'];
 			$post = $row['content'];
 			$id = $row['content_id'];

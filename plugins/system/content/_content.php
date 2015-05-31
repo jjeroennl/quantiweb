@@ -67,87 +67,53 @@
 		return $sqlquery;
 	}
 
-	function content_query($type = 00, $way = "static", $id = 0, $status = 0){
-		if($way == "static"){
-			if($id != 0){
-				if($type == 00){
-					if($status == 1){
-						$query = db_select("*", "content", array(
-							"content_id" => $id
-						));
-					}
-					else{
-						$query = db_select("*", "content", array(
-							"status" => 1,
-							"content_id" => $id
-						));	
-					}
-				}
-				else{
-					if($status == 1){
-						$query = db_select("*", "content", array(
-							"type" => $type,
-							"content_id" => $id
-						));
-					}
-					else{
-						$query = db_select("*", "content", array(
-							"type" => $type,
-							"status" => 1,
-							"content_id" => $id
-						));
-					}
-				}
-
-
-
-				return $query;
-			}
-			else{
-				die("Error: no post");
-			}
-		}
-		elseif($way == "loop"){
-			if($type == 00){
-				if($status == 1){
-					$query = db_select("*", "content", array(
-						"1" => "1"
-					),0, array(
-						"content_id" => "DESC"
-					));
-				}
-				else{
-					$query = db_select("*", "content", array(
-						"status" => 1
-					),0, array(
-						"content_id" => "DESC"
-					));
-				}
-			}
-			else{
-				if($status == 1){
-					$query = db_select("*", "content", array(
-						"type" => $type,
-					),0, array(
-						"content_id" => "DESC"
-					));
-				}
-				else{
-					$query = db_select("*", "content", array(
-						"type" => $type,
-						"status" => 1
-					),0, array(
-						"content_id" => "DESC"
-					));
-				}
-			}
-
-
-			return $query;
+	function content_query($type = 00, $way = "loop", $id = 0, $status = 1){
+		$values = array(1 => 1);
+		$order = array();
+		if(content_isStatic($way) == 1){
+			$values['content_id'] = $id;
 		}
 		else{
-			return("Error");
+			$order['content_id'] = "DESC";
 		}
+		
+		if(content_isTypeSet($type)){
+			$values['type'] = $type;
+		}
+		
+		if(content_hasStatus($status) == 1){ 
+			$values['status'] = $status;
+		}
+		
+		if(count($order) != 0){
+			$query = db_select("*", "content", $values, 0, $order);
+		}
+		else{
+			$query = db_select("*", "content", $values);
+		}
+		return $query;
+	}
+	
+	function content_isTypeSet($type){
+		if($type == 00){
+			return 0;
+		}
+		else{
+			return 1;
+		}
+	}
+	
+	function content_isStatic($way){
+		if($way == "static"){
+			return 1;
+		}
+		else{
+			return 0;
+		}
+	}
+	
+	function content_hasStatus($status){
+		return $status;
 	}
 
 	function content_get_title($id){
