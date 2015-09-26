@@ -9,7 +9,7 @@
         $con = new PDO('mysql:host=' . $hostname . ';dbname=' . $database, $username, $password);
 
         return $con;
-      } 
+      }
       catch (PDOException $e) {
         print "Error!: " . $e->getMessage() . "<br/>";
       }
@@ -30,7 +30,7 @@
 			}
 		}
 		$query = "SELECT " . $what . " FROM " . $from . " WHERE " . $wherequery . $custom;
-		
+
 		if($limit != 0){
 			$query = $query . " LIMIT " . $_limit;
 		}
@@ -46,7 +46,7 @@
 
 
 	}
-	
+
 	function db_escape($string){
 		//this function will be removed! dont use!
 		return $string;
@@ -77,7 +77,7 @@
 
 	function db_update($from, $set, $where){
 		$con = db_connect();
-		
+
 		$executevalues = array();
 		$db1 = 1;
 		foreach($set as $db_key => $db_set){
@@ -115,7 +115,7 @@
 			$con = db_connect();
 
 			$db1 = 1;
-			
+
 			$executevalues = array();
 			foreach($where as $db_key => $db_where){
 				if($db1 == 1){
@@ -135,35 +135,23 @@
 	}
 
 	function db_create($table, $attributes, $primary_key){
-		$con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-		$_table = mysqli_real_escape_string($con, $table);
-		$_primary_key = mysqli_real_escape_string($con, $primary_key);
-		$db_attributes = "";
-		$db1 = 1;
+		$con = db_connect();
 
-		if(db_table_exist($_table) == 1){
-			return null;
+		$query = "CREATE TABLE " . $table . " (";
+
+		foreach($attributes as $name=>$type){
+				$query.= $name . " " .  $type . ",";
 		}
-		foreach($attributes as $attributes => $attr_key){
-			$_attributes = mysqli_real_escape_string($con, $attributes);
-			$_attr_key = mysqli_real_escape_string($con, $attr_key);
-			if($db1 == 1){
-				$db_attributes = $_attributes . " " . strtoupper($_attr_key) . ",";
-				$db1 = 0;
-			}
-			else{
-				$db_attributes = $db_attributes .  $_attributes . " " . strtoupper($_attr_key) . ",";
-			}
-		}
-		$_primary_key = "PRIMARY KEY " . $_primary_key . "(" . $_primary_key . ")";
-		$query = "CREATE TABLE " . $_table . "(" . $db_attributes . $_primary_key . ");";
-		mysqli_query($con, $query) or die(mysqli_error($con));
+
+		$query.=" PRIMARY KEY (" . $primary_key . ")";
+		$query.= ")";
+		$statement = $con->query($query) or die(print_r($con->errorInfo(), true)); ;
 	}
-	
+
 	function db_strip($string){
 		return strip_tags($string);
 	}
-	
+
 	function db_quote($string){
 		$con = db_connect();
 		return $con->quote($string);
@@ -196,12 +184,12 @@
 		if(defined('DB_USER')){
 			$con = db_connect();
 			$textquery = "SELECT COUNT(*) as counted FROM information_schema.tables WHERE table_schema = 'quantiweb' AND table_name = 'nieuws_comments' ";
-	
+
 			$query = db_select("count(*) as counted", "information_schema.tables", array(
 				"table_schema" => DB_NAME,
 				"table_name" => $table
 			));
-	
+
 			while($row = db_grab($query)){
 				return $row['counted'];
 			}
