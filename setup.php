@@ -79,7 +79,7 @@
 		//hostname
 		define('DB_HOST', $_POST['db_host']);
 		include 'plugins/system/db/_db.php';
-	
+
 			$status = 1;
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()\'"';
 		$charactersLength = strlen($characters);
@@ -123,7 +123,7 @@ unset($randomString);
 				$_SESSION['db'] = 1;
 			}
 			fclose($file);
-		
+
 		if($db_status == 2){
 			?>
 			<div class="section section-breadcrumbs">
@@ -214,7 +214,7 @@ unset($randomString);
 				));
 				db_insert("system_settings", array(
 					"setting" => "plugins",
-					"value" => "!system,!admin,!settings,!content,!theme"
+					"value" => "!system,!admin,!settings,!content,!theme,!quantimvc"
 				));
 				db_insert("system_settings", array(
 					"setting" => "index",
@@ -243,7 +243,7 @@ unset($randomString);
                 db_insert("system_settings", array(
 					"setting" => "timeformat",
 					"value" => "H:i:s"
-				));            
+				));
                 db_insert("system_settings", array(
 					"setting" => "dateformat",
 					"value" => "Y-m-d"
