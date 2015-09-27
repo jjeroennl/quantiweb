@@ -1,15 +1,12 @@
 <?php
 	function admin_addpage($name, $function){
-		$_name = db_escape($name);
-		$_function = db_escape($function);
-
 		if(!db_entry_exist("admin", array(
-			"name" => $_name,
-			"function" => $_function
+			"name" => $name,
+			"function" => $function
 		))){
 			db_insert("admin", array(
-				"name" => $_name,
-				"function" => $_function
+				"name" => $name,
+				"function" => $function
 			));
 		}
 	}
