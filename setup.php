@@ -3,20 +3,17 @@
 	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 	$url = str_replace("setup.php", "", $url);
 
-	//defaults
-	define('OFFICIAL_WEBSITE', 'localhost');
-    define('OFFICIAL_NAME', 'Quantiweb');
-    define('FORK_NAME', 'Quantiweb');
-    define('OFFICIAL_VERSION', '0.02');
-    define('INSTALL_LOCATION', $url);
-    define('LOCAL_INSTALL_LOCATION', dirname("__FILENAME__"));
-
     $pagename = "Setup";
 	include("themes/admin/header.php");
 
 	if(isset($_GET['db'])){
-
-		unset($_SESSION['db']);
+		//defaults
+		define('OFFICIAL_WEBSITE', 'localhost');
+	    define('OFFICIAL_NAME', 'Quantiweb');
+	    define('FORK_NAME', 'Quantiweb');
+	    define('OFFICIAL_VERSION', '0.02');
+	    define('INSTALL_LOCATION', $url);
+	    define('LOCAL_INSTALL_LOCATION', dirname("__FILENAME__"));
 		if(!isset($status)){
 				$status = 3;
 		}

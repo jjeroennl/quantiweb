@@ -1,0 +1,66 @@
+  <div class="section section-breadcrumbs">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Setup</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="part_1">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="service-wrapper left-align">
+            <b>Welcome to the instalation process of <span id="forkname"></span>. This setup will let you configure and install your website in a few easy steps.</b>
+    				<h2>Database setup</h2>
+    				<p>This is the most complex part of the setup. For this you will need to setup a database. How to do that depends of your hosting provider. If you don't know your database configuration, contact your hosting provider.</p>
+            <form method="post" action="newsetup.php?set_db">
+              <input type="text" class="form-control" required name="db_name"  id="db_name"placeholder="Database name" ><br>
+              <input type="text" class="form-control" required name="db_user"  id="db_user" placeholder="Database username"><br>
+              <input type="password" class="form-control" required name="db_pass" id="db_pass" placeholder="Database password"><br>
+              <input type="text" class="form-control" required name="db_host" id="db_host" placeholder="Database hostname"><br>
+              <small style="color: grey;">If you don't know which hostname you have to enter than it's usually localhost.</small><br>
+              <input type="text" class="form-control" required name="f_location" id="f_location" placeholder="Instalation URL" value=""><br>
+              <input class="btn btn-grey" value="Send" type="submit">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="db_failed">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="service-wrapper left-align">
+            <h2>Finalizing database setup</h2>
+            It seems that the setup doesn't have rights over the config.php file. You need to manualy copy and paste this into config.php, then click the next button.
+            <textarea class="form-control" id="db_failed_textarea" style="height: 300px;"></textarea>
+            <a href="setup.php?user_setup">Next</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="part_2">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="service-wrapper left-align">
+            <h2>Finalizing setup</h2>
+            <p>Now it's time to setup the nice (and last) part: your website! Tell us what you want to call your site, and which username and password you want to manage it.</p>
+            <form method="post" action="setup.php?finish">
+              <hr>
+              <input type="text" class="form-control" name="websitename" required placeholder="Websitename"><br>
+              <input type="text" class="form-control" name="websiteslogan" placeholder="Slogan">
+              <hr>
+              <input type="text" class="form-control" name="register-username" required placeholder="Username"><br>
+              <input type="password" class="form-control" name="register-password" required placeholder="Password"><br>
+              <input type="email" class="form-control" name="register-email" required placeholder="Email adress"><br>
+              <input type="submit" class="btn btn-grey" value="Setup!">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

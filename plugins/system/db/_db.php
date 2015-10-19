@@ -14,6 +14,21 @@
         print "Error!: " . $e->getMessage() . "<br/>";
       }
 	}
+	function db_testconnection(){
+		try {
+				$username = DB_USER;
+				$password = DB_PASSWORD;
+				$hostname = DB_HOST;
+				$database = DB_NAME;
+
+				$con = new PDO('mysql:host=' . $hostname . ';dbname=' . $database, $username, $password);
+
+				return $con;
+			}
+			catch (PDOException $e) {
+				return "FAILED";
+			}
+	}
 	function db_select($what, $from, $where = array("0" => "0"), $limit = 0, $sort = array("ROW" => "DESC/ASC"), $custom = ""){
 		$con = db_connect();
 		$db1 = 1;
