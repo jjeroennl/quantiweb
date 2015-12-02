@@ -2,12 +2,12 @@
 	include 'load.php';
 
 	if(isset($_GET['loginform'])){
-        if(isset($_SESSION['login'])){
-            header("Location: admin.php?p=3");
-        }
-        else{
+        	if(isset($_SESSION['login'])){
+        	   header("Location: admin.php?p=3");
+        	}
+        	else{
 		  system_loginform();
-        }
+        	}
 	}
 	elseif(isset($_GET['login'])){
 		system_login_backend();
@@ -17,8 +17,8 @@
 	}
 	else{
 		if(!isset($_SESSION['login'])){
-			echo "something went wrong";
 			header("Location: admin.php?loginform");
+			die('<a href="admin.php?loginform">Click here</a> if you didn't get redirected.');
 		}
 		else{
 			if(isset($_GET['logout'])){
