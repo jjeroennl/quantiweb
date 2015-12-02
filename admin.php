@@ -18,7 +18,7 @@
 	else{
 		if(!isset($_SESSION['login'])){
 			header("Location: admin.php?loginform");
-			die('<a href="admin.php?loginform">Click here</a> if you didn't get redirected.');
+			die('<a href="admin.php?loginform">Click here</a> if you didn\'t get redirected.');
 		}
 		else{
 			if(isset($_GET['logout'])){
