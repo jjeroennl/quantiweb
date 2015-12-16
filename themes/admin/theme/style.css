@@ -1,0 +1,341 @@
+@font-face {
+    font-family: Lato;
+    src: url(fonts/Lato-Regular.ttf);
+}
+@font-face {
+    font-family: Slim;
+    src: url(fonts/Lato-Hairline.ttf);
+}
+@font-face {
+    font-family: Title;
+    src: url(fonts/Lato-Light.ttf);
+}
+body {
+    margin: 0px;
+    /*margin-top: 48px;*/
+    background-color: rgb(232, 232, 232);
+    font-family: Lato;
+    color: rgb(73, 73, 73);
+}
+.navigation {
+    background-color: rgb(38, 55, 75);
+    color: rgb(166, 166, 166);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    border-right: 1px solid rgb(182, 182, 182);
+    box-shadow: 0px 0px 3px #999;
+    z-index: 2;
+}
+.logo {
+    font-size: 24px;
+    font-family: Title;
+    line-height: 48px;
+    display: inline-block;
+}
+.menu {
+    float: right;
+    line-height: 48px;
+    text-align: center;
+    width: 64px;
+}
+.menu li {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    font-size: 25px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    padding-right: 10px;
+    list-style: none;
+    transition: background-color 0.2s;
+}
+.menu li:last-of-type {
+    position: fixed;
+    bottom: 0px;
+}
+.menu .active {
+    background-color: rgb(86, 111, 143);
+}
+.menu li:hover {
+    background-color: rgb(86, 111, 143);
+    cursor: pointer;
+}
+.menu .fa {
+    color: rgb(168, 168, 168) !important;
+}
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 1000px;
+    display: table;
+}
+.title {
+    text-align: center;
+    padding-top: 21px;
+    padding-bottom: 21px;
+    margin: 0px;
+}
+
+.center{
+	margin: 0 auto;
+}
+
+.align-right{
+	float: right;
+}
+
+.align-left{
+	float: left;
+}
+
+.panel-area {
+    text-align: center;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+.panel {
+    float: left;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 0px 5px #999;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.error{
+	background-color: rgb(255, 107, 107);
+}
+
+.huge {
+    width: 100%;
+}
+.large {
+    width: 64%;
+}
+.normal {
+    width: 50%;
+}
+.small {
+    width: 31%;
+}
+.no-center {
+    text-align: left;
+}
+.fixedheight {
+    height: 400px;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: Slim;
+}
+.fa {
+    color: rgb(38, 55, 75);
+}
+.button {
+    text-decoration: none;
+    color: rgb(214, 214, 214);
+    position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+    background-color: rgb(38, 55, 75);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.button:hover {
+    background-color: rgb(86, 111, 143);
+}
+
+#isactive{
+	transition: background-color 0.2s;
+	cursor: not-allowed;
+	background-color: rgb(147, 62, 62);
+}
+
+#isactive:hover{
+	background-color: rgb(213, 85, 85);
+}
+
+.theme-image{
+	height: 200px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center top;
+}
+
+.window {
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    right: 25%;
+    bottom: 25%;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    margin-left: 10px;
+    margin-right: 10px;
+    z-index: 1001;
+	display: none;
+}
+.window > .windowtitle {
+    display: inline-block;
+    border-bottom: 1px solid rgb(208, 208, 208);
+    width: 100%;
+}
+.window > .windowtitle > .title {
+    float: left;
+    padding-left: 21px;
+}
+.closebutton {
+    float: right;
+    padding-top: 21px;
+    padding-bottom: 21px;
+    padding-top: 21px;
+    padding-right: 21px;
+    cursor: pointer;
+}
+.closebutton .fa {
+    color: #494949;
+    transition: color 0.2s;
+}
+.closebutton .fa:hover {
+    color: rgb(194, 35, 35) !important;
+}
+
+.pluginmark{
+	font-size:80px;
+	text-align: center;
+}
+
+.windowcontent {
+    text-align: left;
+    padding-top: 21px;
+    padding-bottom: 21px;
+    padding-top: 10px;
+    padding-left: 21px;
+	box-sizing: border-box;
+	margin-left: -10px;
+	margin-right: -10px;
+}
+
+.windowpanel{
+	float: left;
+}
+
+.windowfooter{
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	right: 20px;
+	text-align: right;
+}
+
+.windowfooter > .button{
+	margin-left: 10px;
+}
+
+.darkmatter {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    background-color: black;
+    opacity: 0.8;
+    z-index: 1000;
+    cursor: pointer;
+	display: none;
+}
+
+/*inputs*/
+
+input{
+	border: 1px solid rgb(170, 170, 170);
+}
+
+select{
+	border: 1px solid rgb(170, 170, 170);
+	background-color: rgb(255, 255, 255);
+	height: 30px;
+	padding: 5px;
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+input[type="text"]{
+	height: 20px;
+	padding: 5px;
+	width: 98%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
+
+}
+
+input[type="password"]{
+	height: 20px;
+	padding: 5px;
+	width: 98%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+input[type="email"]{
+	height: 20px;
+	padding: 5px;
+	width: 98%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+textarea{
+	height: 200px;
+	padding: 5px;
+	width: 90%;
+	margin: 10px;
+	border: 1px solid rgb(170, 170, 170);
+	font-size: 16px;
+}
+
+input[type="submit"] {
+    text-decoration: none;
+    color: rgb(214, 214, 214);
+    position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+    background-color: rgb(38, 55, 75);
+    cursor: pointer;
+	border: none;
+    transition: background-color 0.2s;
+}
+input[type="submit"]:hover {
+    background-color: rgb(86, 111, 143);
+}
+
+#loginform{
+	margin: 0 auto;
+	width: 350px;
+	height: 250px;
+	background-color: rgb(255, 255, 255);
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0px 0px 5px #999;
+}
+
+#login{
+	margin-top: 59.5px;
+}

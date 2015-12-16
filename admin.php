@@ -17,7 +17,6 @@
 	}
 	else{
 		if(!isset($_SESSION['login'])){
-			echo "something went wrong";
 			header("Location: admin.php?loginform");
 		}
 		else{

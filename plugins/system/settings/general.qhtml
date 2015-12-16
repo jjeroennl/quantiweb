@@ -1,0 +1,20 @@
+<panel huge>
+	<form method="post">
+		<h4>Website info</h4>
+		<input class="form-control" name="websitename" placeholder="Websitename" ></input>
+		<input  name="slogan" placeholder="Slogan"></input>
+		<h4>User settings</h4>
+			<input name="allowregistration" type="checkbox"></input>
+			<label for="allowregistration">Allow registration</label>
+			 Default userrole:
+			<select name="defaultrole" class="form-control">
+				<option>Admin</option>
+				<option>Contributor</option>
+				<option>Writer</option>
+				<option>Subscriber</option>
+			</select>
+			<h4>Time</h4>
+
+			<input class="btn" name="generalpost" type="submit" value="Send"></input>
+	</form>
+</panel>

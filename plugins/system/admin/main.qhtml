@@ -1,0 +1,23 @@
+<h1 class="title">$title</h1>
+<div class="panelarea" id="panelarea">
+	<panel large>
+		<i class="fa fa-tachometer fa-5x"></i>
+		<h3>Welcome!</h3>
+		<p>Welcome to Quantiweb! The "home" is the page where you can quickly get stats about your website and get a general overview about your website</p>
+		<a id="showsite" class="button">Show your site</a>
+
+	</panel>
+
+	<panel small>
+		<i class="fa fa-users fa-5x"></i>
+		<h3>Users</h3>
+		<p>There $isareusers currently $numberofusers $users registered to your website.</p>
+		<a id="manageuser" class="button">Manage users</a>
+	</panel>
+
+	<panel small>
+		<i class="fa fa-pencil fa-5x"></i>
+		<h3>Content</h3>
+		<p>There $isarecontent currently $content $posts on your website.</p>
+	</panel>
+</div>

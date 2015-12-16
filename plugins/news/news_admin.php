@@ -1,37 +1,8 @@
 <?php
 	system_check();
-	function removemodal($id){
-		echo '
-					<div class="modal fade" style="text-align: left;"id="remove_' . $id . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
-					';
-					$div = "alert-danger";
-
-					echo '
-						<div class="modal-dialog">
-							<div class="modal-content">
-							<div class="modal-header ' . $div . '">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title" id="myModalLabel"><i class="fa fa-trash"></i> Remove ' . substr(content_get_title($id),0, 20) . '</h4>
-							</div>
-							<div class="modal-body">
-							Are you totaly sure you want to remove this post "' . substr(content_get_title($id), 0, 20). '"?
-							</div>
-							<div class="modal-footer ' . $div . '">
-								<button type="button" class="btn btn" data-dismiss="modal">No, get me out of here!</button>
-								<a href="admin.php?p=' . $_GET['p'] . '&remove=' . $id . '" class="btn btn-red">Remove "' . substr(content_get_title($id),0, 20) . '"</a>
-
-							</div>
-							</div>
-						</div>
-					</div>
-			';
-		}
 
 
 	function nieuws_normal_view(){
-
-
 		$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 0);
 
 			if(db_numrows($content) == 0){
@@ -43,27 +14,8 @@
 
 		echo '<table class="events-list"><tbody>';
 
-			while($row = db_grab($content)){
+			?>
 
-?>
-						<tr>
-							<td style="width: 112px;">
-								<div class="event-date">
-									<div class="event-day"><?php echo date("d", strtotime($row['date']));?></div>
-									<div class="event-month"><?php echo strtoupper(date("M", strtotime($row['date'])));?></div>
-									<div style="margin-top: -5px;"class="event-month"><?php echo date("Y", strtotime($row['date']));?></div>
-								</div>
-
-							</td>
-							<td>
-								<b><?php echo substr($row['title'], 0, 51);?></b>
-							</td>
-							<td class="event-venue hidden-xs"><i class="icon-map-marker"></i><?php echo $row['views'];?></td>
-							<td class="event-venue hidden-xs"><i class="icon-map-marker"></i><?php echo ucfirst(system_getuserinfo($row['author'], "username"));?></td>
-
-							<td><a href="#" data-toggle="modal" data-target="#remove_<?php echo $row['content_id']; ?>" class="btn btn-red btn-sm"><i class="fa  fa-trash-o"></i></a> <a href="admin.php?p=<?php echo db_escape($_GET['p'])?>&edit=<?php echo $row['content_id'];?>" class="btn btn-blue btn-sm event-more"><i class="fa  fa-pencil"></i></a></td>
-							<?php removemodal($row['content_id']);?>
-						</tr>
 
 
 <?php
@@ -168,7 +120,7 @@
 					}
 				?>
 			</select> <br>
-			
+
 			<select name="categorie" class="form-control" style="margin-bottom: 10px;">
 				<option><?php echo content_get_type_name($cat);?></option>
 				<option>Nieuws</option>
@@ -183,7 +135,7 @@
 					echo '<input type="submit" style="float: right; margin-left: 5px;" value="Update" class="btn" name="submit-publish">';
 				}
 				else{
-					echo '<input type="submit" style="float: right; margin-left: 5px;" value="Publish" class="btn" name="submit-publish"> 			 <input type="submit" value="Save as draft" style="float: right;"class="btn" name="submit-draft">';	
+					echo '<input type="submit" style="float: right; margin-left: 5px;" value="Publish" class="btn" name="submit-publish"> 			 <input type="submit" value="Save as draft" style="float: right;"class="btn" name="submit-draft">';
 				}
 			?>
 
@@ -193,25 +145,7 @@
 		<?php
 	}
 
-	function nieuws_insert(){
-		$title = $_POST['title'];
-		$content = $_POST['content'];
-		$user = system_currentuser();
-		if(isset($_POST['submit-publish'])){
-			content_add($title, $content, $user, 1, content_get_type($_POST['categorie']));
-		}
-		else{
-			content_add($title, $content, $user, 0, content_get_type($_POST['categorie']));
-		}
-		header("Location: admin.php?p=" . $_GET['p']);
-	}
 
-	function nieuws_update(){
-		$id = $_POST['edit'];
-		$content = $_POST['content'];
-		content_modify($id, $content);
-		header("Location: admin.php?p=" . $_GET['p']);
-	}
 
 
 

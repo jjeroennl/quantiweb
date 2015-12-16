@@ -1,0 +1,3 @@
+AUTHOR: Jeroen
+WEBSITE: http://www.jjeroen.nl
+VERSION: 1.0

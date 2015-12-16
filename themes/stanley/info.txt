@@ -1,4 +1,4 @@
-DESC: Stanley is a really simple theme for those wanting to showcase their work with a cute & clean style.
+DESC: Stanley is a really simple theme for those wanting to showcase their work with a cute clean style.
 AUTHOR: Blacktie
 WEBSITE: http://www.blacktie.co/
 VERSION: 1.0

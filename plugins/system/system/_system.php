@@ -144,9 +144,9 @@
 
     function system_setuserinfo($user, $setting, $value){
         db_update("users", array(
-            $setting => $value 
+            $setting => $value
         ), array(
-            "user_id" => $user   
+            "user_id" => $user
         ));
     }
 
@@ -173,9 +173,10 @@
 	}
 
 	function system_loginform(){
-		$send = 1;
-		$pagename = "Login";
-		include(dirname(__FILE__) . '/../admin/loginform.php');
+		include "themes/admin/header.php";
+		$mvc = new Mvc('/../admin/loginform.qhtml', __FILE__);
+		$mvc->get_all();
+		include "themes/admin/footer.php";
 	}
 
 	function system_login_backend(){
@@ -228,6 +229,15 @@
 			die($error);
 		}
 
+	}
+
+	function system_redirect($url){
+		header("location: " . $url);
+		?>
+			<script>
+				window.location = <?php echo $url;?>;
+			</script>
+		<?php
 	}
 
 ?>

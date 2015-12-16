@@ -1,0 +1,7 @@
+<div class="panel-area" id="panel-area">
+	<panel huge>
+		<div class="align-right"><a class="button" id="newitem">New newsitem</a></div>
+		<table id="newsitems">
+		</table>
+	</panel>
+</div>

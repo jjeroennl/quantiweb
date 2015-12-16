@@ -6,10 +6,10 @@
 		content_create_type("Economie", "nieuws_getcomments", 1, 1);
 		content_create_type("Tech", "nieuws_getcomments", 1, 1);
 		content_create_type("Sport", "nieuws_getcomments", 1, 1);
-		
+
 		system_setindex("nieuws_index");
-		admin_addpage("Nieuws", "nieuws_admin");
-	   
+		admin_addpage("Nieuws", "nieuws_admin", "puzzle-piece");
+
 		if(db_table_exist("nieuws_comments") == 0){
 			db_create("nieuws_comments", array(
 				"comment" => "TEXT",
@@ -94,7 +94,66 @@
 
 	function nieuws_admin(){
 		$send = 1;
-		include 'news_admin.php';
+
+		if(isset($_GET['edit'])){
+			$mvc = new Mvc("news-edit.qhtml", __FILE__);
+			$mvc->get_all();
+		}
+		else{
+			$mvc = new Mvc("news-admin.qhtml", __FILE__);
+			$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 0);
+			if(db_numrows($content) == 0){
+				$mvc->_("#newsitems")->append('You don\'t have any posts yet. <a href="admin.php?p=' . db_escape($_GET['p']) . '&createnew">Create one?</a>');
+			}
+			else{
+				while($row = db_grab($content)){
+					$mvc->_("#newsitems")->append(nieuws_backend_item($row));
+				}
+			}
+			$mvc->get_all();
+		}
+
+	}
+
+	function nieuws_insert(){
+		$title = $_POST['title'];
+		$content = $_POST['content'];
+		$user = system_currentuser();
+		if(isset($_POST['submit-publish'])){
+			content_add($title, $content, $user, 1, content_get_type($_POST['categorie']));
+		}
+		else{
+			content_add($title, $content, $user, 0, content_get_type($_POST['categorie']));
+		}
+		header("Location: admin.php?p=" . $_GET['p']);
+	}
+
+	function nieuws_update(){
+		$id = $_POST['edit'];
+		$content = $_POST['content'];
+		content_modify($id, $content);
+		header("Location: admin.php?p=" . $_GET['p']);
+	}
+
+	function nieuws_backend_item($row){
+		return '
+
+		<tr>
+			<td style="width: 112px;">
+				<div class="event-date">
+					<div class="event-day">' . date("d", strtotime($row['date'])) . '</div>
+					<div class="event-month">' .  strtoupper(date("M", strtotime($row['date']))) . '</div>
+					<div style="margin-top: -5px;"class="event-month">' . date("Y", strtotime($row['date'])) . '</div>
+				</div>
+
+			</td>
+			<td>
+				<b>' . substr($row['title'], 0, 51) . '</b>
+			</td>
+			<td class="event-venue hidden-xs"><i class="icon-map-marker"></i>' . $row['views'] . '</td>
+			<td class="event-venue hidden-xs"><i class="icon-map-marker"></i>' . ucfirst(system_getuserinfo($row['author'], "username")) . '</td>
+			<td><a href="#" data-toggle="modal" data-target="#remove_' . $row['content_id'] . '" class="btn btn-red btn-sm"><i class="fa  fa-trash-o"></i></a> <a href="admin.php?p=' . db_escape($_GET['p']) . '&edit=' .$row['content_id'] . '" class="btn btn-blue btn-sm event-more"><i class="fa  fa-pencil"></i></a></td>
+		</tr>';
 	}
 
 
