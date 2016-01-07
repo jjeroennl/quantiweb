@@ -1,99 +1,94 @@
 <?php
 	function content_create_type($type, $aditional = null, $menu = 0, $way = 0){
-		if(db_entry_exist("content_types", array("type" => $type)) == 0){
-			if($aditional == null){
-				db_insert("content_types", array(
-					"type" => $type,
-					"menu" => $menu,
-					"way" => $way
-				));
+		if(dbEntryExist("content_types", array("type" => $type)) == 0){
+			$insert = new Insert("content_types");
+			$insert->insert("type", $type);
+			$insert->insert("type", $menu);
+			$insert->insert("type", $way);
+			if($aditional != null){
+				$insert->insert("aditional", $aditional);
 			}
-			else{
-				db_insert("content_types", array(
-					"type" => $type,
-					"menu" => $menu,
-					"way" => $way,
-					"aditional" => $aditional
-				));
-			}
-
+			$insert->execute();
 		}
 	}
 
 
 	function content_get_type($name){
-		$query = db_select("*", "content_types", array(
-			"type" => $name
-		));
+		$query = new Select("content_types");
+		$query->where("type", $name);
+		$query->execute();
 
-		if(db_numrows($query) == 0){
+		if($query->numrows() == 0){
 			return "There is no content type with this name";
 		}
 
-		while($row = db_grab($query)){
+		foreach($query->fetch() as $row){
 			return $row['type_id'];
 		}
 	}
 
 	function content_get_type_name($id){
-		$query = db_select("*", "content_types", array(
-			"type_id" => $id
-		));
-		
-		while($row = db_grab($query)){
+		$query = new Select("content_types");
+		$query->where("type", $name);
+		$query->execute();
+
+		if($query->numrows() == 0){
+			return "There is no content type with this id";
+		}
+
+		foreach($query->fetch() as $row){
 			return $row['type'];
 		}
 	}
 
 	function content_get_way($type){
+		$query = new Select("content_type");
 		if(is_numeric($type)){
-			$query = db_select("*", "content_type", array(
-				"type_id" => $type
-			));
+			$query->where("type_id", $type);
 		}
 		else{
-			$query = db_select("*", "content_type", array(
-				"type" => $type
-			));
+			$query->where("type", $type);
+
 		}
-		while($row = db_grab($query)){
+		$query->execute();
+		foreach($query->fetch() as $row){
 			return $row['way'];
 		}
 	}
 
 	function content_search($query){
 		$_query = "%" . $query . "%";
-		$sqlquery = db_custom("SELECT * FROM content WHERE content LIKE '$_query'");
+		$sqlquery = new Select("content");
+		$sqlquery->where("content", "LIKE $_query");
+		$sqlquery->execute();
 		return $sqlquery;
 	}
 
 	function content_query($type = 00, $way = "loop", $id = 0, $status = 1){
 		$values = array(1 => 1);
 		$order = array();
+		$query = new Select("content");
+
 		if(content_isStatic($way) == 1){
-			$values['content_id'] = $id;
+			$query->where('content_id', $id);
 		}
 		else{
-			$order['content_id'] = "DESC";
+			$query->orderBy('content_id DESC');
 		}
-		
+
 		if(content_isTypeSet($type)){
-			$values['type'] = $type;
+			$query->where('type', $type);
 		}
-		
-		if(content_hasStatus($status) == 1){ 
-			$values['status'] = $status;
+
+		if(content_hasStatus($status) == 1){
+			$query->where('status', $status);
 		}
-		
-		if(count($order) != 0){
-			$query = db_select("*", "content", $values, 0, $order);
-		}
-		else{
-			$query = db_select("*", "content", $values);
-		}
+
+		$query->execute();
+
 		return $query;
 	}
-	
+
 	function content_isTypeSet($type){
 		if($type == 00){
 			return 0;
@@ -102,7 +97,7 @@
 			return 1;
 		}
 	}
-	
+
 	function content_isStatic($way){
 		if($way == "static"){
 			return 1;
@@ -111,17 +106,17 @@
 			return 0;
 		}
 	}
-	
+
 	function content_hasStatus($status){
 		return $status;
 	}
 
 	function content_get_title($id){
-		$query = db_select("*", "content", array(
-			"content_id" => $id
-		));
+		$query = new Select("content");
+		$query->where("content_id", $id);
+		$query->execute();
 
-		while($row = db_grab($query)){
+		foreach($query->fetch() as $row){
 			return $row['title'];
 		}
 	}
@@ -130,12 +125,14 @@
 		if(isset($_GET['p'])){
 			$page = $_GET['p'];
 			if(is_numeric($page)){
-				$get_pages = db_select("title, content_id", "content", array(
-					"content_id" => $page
-				));
+				$get_pages = new Select( "content");
+				$get_pages->select("title");
+				$get_pages->select("content_id");
+				$get_pages->where("content_id", $page);
+				$get_pages->execute();
 
-				while($row2 = db_grab($get_pages)){
-					return $row2['title'];
+				foreach($get_pages as $row){
+					return $row['title'];
 				}
 			}
 			else{
@@ -153,7 +150,7 @@
 			$id = $_GET['p'];
 			if(is_numeric($id)){
 				$query = content_query(00, "static", $id);
-				while($row = db_grab($query)){
+				foreach($query->fetch() as $row){
 					echo $row['content'];
 					content_addview($id);
                     $additionalfunction = content_getadditionalfunction($row['type']);
@@ -165,15 +162,16 @@
 			else{
 				$query = content_query(content_get_type($id), "loop", $id);
 
-				while($row = db_grab($query)){
+				foreach($query->fetch() as $row){
 					echo "<h2>" . $row['title'] . "</h2>";
 					echo substr($row['content'], 0, 500) . "...";
 					echo "</p><br>" . content_readmore($row['content_id']);
-                    
+
 				}
 			}
 		}
 		elseif(isset($_GET['s'])){
+			$query = strip_tags($_GET['s']);
 			content_makeSearchPage($query);
 		}
 		else{
@@ -181,18 +179,17 @@
 		}
 
 	}
-	
+
 	function content_makeSearchPage($query){
 		$getresult = str_replace("%20", " " , $query);
-		$result = content_search($getresult);	
-		while($row = db_grab($result)){
+		$result = content_search($getresult);
+		foreach($result->fetch() as $row){
 			echo "<h2>" . $row['title'] . "</h2>";
 			echo substr($row['content'], 0, 500) . "...";
 			echo "<br>" . content_readmore($row['content_id']);
-
 		}
 	}
-	
+
 	function content_makeIndexPage(){
 		$function = system_getsetting("index");
 		if(function_exists($function)){
@@ -204,21 +201,9 @@
 	}
 
 	function content_addView($id){
-		$query = db_select("*", "content", array(
-            "content_id" => $id
-        ));
-        while($row2 = db_grab($query)){
-            $views = $row2['views'];
-            $views++;
-        }
-		db_update("content", array(
-					"views" => $views
-				),
-				array(
-					"content_id" => $id
-				));
+		return;
 	}
-	
+
 	function content_get_sidebar(){
 		//TODO: editable!
 		echo "<h2>Search</h2>";
@@ -230,20 +215,20 @@
         			<button class="btn btn-default" type="submit">Go!</button>
       			</span>
     		</div><!-- /input-group -->
-			
+
 		</form>
 		<?php
 	}
 
     function content_getadditionalfunction($contenttype){
-        $query = db_select("*", "content_types", array(
-            "type_id" => $contenttype
-        ));
-        
-        while($row = db_grab($query)){
+        $query = new Select("content_types");
+		$query->where("type_id", $contenttype);
+		$query->execute();
+
+		foreach($query->fetch() as $row){
             return $row['aditional'];
         }
-        
+
     }
 
 	function content_add($title, $content, $author, $status, $type){
@@ -284,19 +269,23 @@
 	}
 
 	function content_nav(){
-		$query = db_select("*", "content_types", array(
-			"menu" => 1
-		));
+		$query = new Select("content_types");
+		$query->where("menu", 1);
+		$query->execute();
+
+		//TODO: Add join instead of 2 seperate querys
+
 		$nav = "";
 		$nav = $nav . '<li><a href="index.php">Home</a></li>';
 
-		while($row = db_grab($query)){
+		foreach($query->fetch() as $row){
 			if($row['way'] == 0){
 				//static page per content
-				$get_pages = db_select("title, content_id", "content", array(
-					"type" => $row['type_id']
-				));
-				while($row2 = mysqli_fetch_array($get_pages)){
+				$get_pages = new Select( "content");
+				$get_pages->select("title, content_id");
+				$get_pages->where("type", $row['type_id']);
+
+				foreach($get_pages->fetch() as $row2){
 					$nav = $nav . "<li><a>" . $row2['title'] . "</a></li>";
 				}
 			}

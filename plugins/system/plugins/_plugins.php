@@ -18,11 +18,12 @@
 
     function plugins_load()
     {
-        $allplugins = db_select('value', 'system_settings', array(
-            'setting' => 'plugins',
-        ));
+		$allplugins = new Select("system_settings");
+		$allplugins->select("value");
+		$allplugins->where("setting", "plugins");
+		$allplugins->execute();
 
-        while ($row = db_grab($allplugins)) {
+        foreach($allplugins->fetch() as $row){
             $plugins = $row['value'];
         }
 
@@ -95,18 +96,18 @@
 
 	function plugin_controller($data){
 		if(isset($data['activate'])){
-			system_setsetting("plugins", system_getsetting("plugins") . "," . db_escape($data['activate']));
-			include 'plugins/' . db_escape($data['activate']) . '/index.php';
-			$function = db_escape($data['activate']) . "_install";
+			system_setsetting("plugins", system_getsetting("plugins") . "," . $data['activate']);
+			include 'plugins/' .$data['activate'] . '/index.php';
+			$function = $data['activate'] . "_install";
 
 			if(function_exists($function)){
 				$function();
 			}
-			header("Location: admin.php?p=" . db_escape($_GET['p']));
+			header("Location: admin.php?p=" . strip_tags($_GET['p']));
 		}
 		if(isset($data['disable'])){
-			system_setsetting("plugins", str_replace(db_escape(",". $data['disable']), "", system_getsetting("plugins")));
-			header("Location: admin.php?p=". db_escape($data['p']));
+			system_setsetting("plugins", str_replace(strip_tags(",". $data['disable']), "", system_getsetting("plugins")));
+			header("Location: admin.php?p=". strip_tags($data['p']));
 		}
 	}
 
@@ -145,7 +146,7 @@
                 'system_' => '0',
                 'db_delete' => '6',
                 'content_' => '1',
-                'exec' => '7',
+                'exec(' => '7',
                 'passthru' => '7',
                 'shell_exec' => '7',
                 'popen' => '5',
@@ -180,7 +181,7 @@
             'system_' => 'Use system functions',
             'db_delete' => 'Delete entries in your database system',
             'content_' => 'Read, write or delete content',
-            'exec' => 'Execute commands on your server',
+            'exec(' => 'Execute commands on your server',
             'passthru' => 'Execute commands on your server without verification',
             'popen' => 'Read and write files',
             'assert' => 'Posibly stop quantiweb from working',

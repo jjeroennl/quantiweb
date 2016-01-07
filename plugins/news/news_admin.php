@@ -5,11 +5,11 @@
 	function nieuws_normal_view(){
 		$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 0);
 
-			if(db_numrows($content) == 0){
-				echo 'You don\'t have any posts yet. <a href="admin.php?p=' . db_escape($_GET['p']) . '&createnew">Create one?</a>';
+			if($content->numrows() == 0){
+				echo 'You don\'t have any posts yet. <a href="admin.php?p=' . strip_tags($_GET['p']) . '&createnew">Create one?</a>';
 			}
 			else{
-				echo '<p style="text-align: left;"><a href="admin.php?p=' . db_escape($_GET['p']) . '&createnew" class="btn">New post</a></p>';
+				echo '<p style="text-align: left;"><a href="admin.php?p=' . strip_tags($_GET['p']) . '&createnew" class="btn">New post</a></p>';
 			}
 
 		echo '<table class="events-list"><tbody>';
@@ -30,7 +30,7 @@
 	function nieuws_create_new(){
 		?>
 		<div class="col-sm-8 left-align">
-			<form action="admin.php?p=<?php echo db_escape($_GET['p']);?>&postnew" method="POST">
+			<form action="admin.php?p=<?php echo strip_tags($_GET['p']);?>&postnew" method="POST">
 
 				<textarea name="content" id="editor"></textarea>
 
@@ -76,7 +76,7 @@
 	}
 
 	function nieuws_edit(){
-		$post = db_escape($_GET['edit']);
+		$post = strip_tags($_GET['edit']);
 		$content = content_query(00, "static", $post, 0);
 
 		while($row = db_grab($content)){
@@ -89,7 +89,7 @@
 		}
 		?>
 		<div class="col-sm-8 left-align">
-			<form action="admin.php?p=<?php echo db_escape($_GET['p']);?>&postedit" method="POST">
+			<form action="admin.php?p=<?php echo strip_tags($_GET['p']);?>&postedit" method="POST">
 
 				<textarea name="content" id="editor"><?php echo $post;?></textarea>
 

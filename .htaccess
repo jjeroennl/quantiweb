@@ -1,6 +1,0 @@
-AuthGroupFile /dev/null
-AuthType Basic
-AuthUserFile /home/gerttqp116/domains/jjeroen.nl/.htpasswd/public_html/quantitest/.htpasswd
-AuthName "Quantiweb testing"
-require valid-user
-ErrorDocument 401 "Unauthorized Access"

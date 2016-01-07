@@ -6,12 +6,12 @@
   if(!array_key_exists("checksetup", $_SESSION)){
 	  include 'config.php';
 	  include 'plugins/system/db/_db.php';
-	  if(db_testconnection() == 'FAILED'){
+	  if(dbTestConnection() == 'FAILED'){
 		  $_SESSION['checksetup'] = 1;
 		  header("location: setup.php");
 	  }
 	  else{
-		  if(db_table_exist("system_settings")){
+		  if(dbTableExist("system_settings")){
 			  die("It is currently not necessarily to run the setup. Try again later.");
 		  }
 		  else{
@@ -111,7 +111,7 @@
       include 'plugins/system/db/_db.php';
       include 'plugins/system/system/_system.php';
 
-	  if(db_table_exist("system_settings")){
+	  if(dbTableExist("system_settings")){
 		  $create_error = 1;
 		  header("location: setup.php?user_setup&display_error");
 	  }

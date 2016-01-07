@@ -10,20 +10,20 @@
 		system_setindex("nieuws_index");
 		admin_addpage("Nieuws", "nieuws_admin", "puzzle-piece");
 
-		if(db_table_exist("nieuws_comments") == 0){
-			db_create("nieuws_comments", array(
-				"comment" => "TEXT",
-				"name" => "TEXT",
-				"email" => "TEXT",
-				"comment_id" => "INT NOT NULL AUTO_INCREMENT "
-			), "comment_id");
+		if(dbTableExist("nieuws_comments") == 0){
+			$createTable = new Create("nieuws_comments", "comment_id");
+			$createTable->addRow("comment", "text");
+			$createTable->addRow("name", "text");
+			$createTable->addRow("email", "text");
+			$createTable->addRow("comment_id", "int", "not null auto_increment");
+			$createTable->execute();
 		}
 
-		if(db_table_exist("nieuws_categories") == 0){
-			db_create("nieuws_categories", array(
-				"category" => "TEXT",
-				"category_id" => "INT NOT NULL AUTO_INCREMENT "
-			), "category_id");
+		if(dbTableExist("nieuws_categories") == 0){
+			$createTable = new Create("nieuws_categories", "category_id");
+			$createTable->addRow("category", "text");
+			$createTable->addRow("category_id", "int", "not null auto_increment");
+			$createTable->execute();
 		}
 
 	}
@@ -32,7 +32,7 @@
 		nieuws_checkpost();
 		$content = content_query(00, "loop");
 
-		while($row = db_grab($content)){
+		foreach($content->fetch() as $row){
 			echo "<h1>" . $row['title'] . "</h1>";
             echo substr($row['content'], 0, 500) . "...</p>";
 			echo "<br>" . content_readmore($row['content_id']);
@@ -49,11 +49,12 @@
 		<a href="https://twitter.com/intent/tweet?url=<?php echo INSTALL_LOCATION . "/index.php?p=" . $_GET['p'] ;?>&text=<?php echo content_get_page_title();?> - <?php echo system_getsetting("websitename");?>"><img src="themes/admin/img/social/twitter.png" width="52px"> </a>
 		<?php
         echo "<hr><h2> Comments</h2>";
-		$query = db_select("*", "nieuws_comments");
-        if(db_numrows($query) < 1){
+		$query = new Select("nieuws_comments");
+		$query->execute();
+        if($query->numrows() < 1){
             echo "There are no comments";
         }
-		while($row = db_grab($query)){
+		foreach($query->fetch() as $row){
 			echo "<b>" . $row['name'] . "</b>";
 			echo "<p>" . $row['comment'] . "</p>";
 		}
@@ -63,11 +64,12 @@
 
 	function nieuws_checkpost(){
 		if(isset($_POST['comment-name']) && isset($_POST['comment-email']) && isset($_POST['comment'])){
-			db_insert("nieuws_comments", array(
-				"comment" => $_POST['comment'],
-				"name" => $_POST['comment-name'],
-				"email" => $_POST['comment-email']
-			));
+			$insert = new Insert("nieuws_comments");
+			$insert->insert("comment", $_POST['comment']);
+			$insert->insert("name", $_POST['comment-name']);
+			$insert->insert("email", $_POST['comment-email']);
+			$insert->execute();
+
 			$url = "index.php?p=" . $_GET['p'];
 			header("Location: " . $url);
 		}
@@ -85,11 +87,11 @@
 	}
 
 	function nieuws_createcomment($comment, $name, $email){
-		db_insert("nieuws_comments", array(
-			"comment" => $comment,
-			"name" => $name,
-			"email" => $email
-		));
+		$insert = new Insert("nieuws_comments");
+		$insert->insert("comment", $comment);
+		$insert->insert("name", $name);
+		$insert->insert("email", $email);
+		$insert->execute();
 	}
 
 	function nieuws_admin(){
@@ -102,11 +104,11 @@
 		else{
 			$mvc = new Mvc("news-admin.qhtml", __FILE__);
 			$content = content_query($type = content_get_type("Nieuwsitem"), "loop", 0, 0);
-			if(db_numrows($content) == 0){
-				$mvc->_("#newsitems")->append('You don\'t have any posts yet. <a href="admin.php?p=' . db_escape($_GET['p']) . '&createnew">Create one?</a>');
+			if($content->numrows() == 0){
+				$mvc->_("#newsitems")->append('You don\'t have any posts yet. <a href="admin.php?p=' . strip_tags($_GET['p']) . '&createnew">Create one?</a>');
 			}
 			else{
-				while($row = db_grab($content)){
+				foreach($content->fetch() as $row){
 					$mvc->_("#newsitems")->append(nieuws_backend_item($row));
 				}
 			}
@@ -152,7 +154,7 @@
 			</td>
 			<td class="event-venue hidden-xs"><i class="icon-map-marker"></i>' . $row['views'] . '</td>
 			<td class="event-venue hidden-xs"><i class="icon-map-marker"></i>' . ucfirst(system_getuserinfo($row['author'], "username")) . '</td>
-			<td><a href="#" data-toggle="modal" data-target="#remove_' . $row['content_id'] . '" class="btn btn-red btn-sm"><i class="fa  fa-trash-o"></i></a> <a href="admin.php?p=' . db_escape($_GET['p']) . '&edit=' .$row['content_id'] . '" class="btn btn-blue btn-sm event-more"><i class="fa  fa-pencil"></i></a></td>
+			<td><a href="#" data-toggle="modal" data-target="#remove_' . $row['content_id'] . '" class="btn btn-red btn-sm"><i class="fa  fa-trash-o"></i></a> <a href="admin.php?p=' . strip_tags($_GET['p']) . '&edit=' .$row['content_id'] . '" class="btn btn-blue btn-sm event-more"><i class="fa  fa-pencil"></i></a></td>
 		</tr>';
 	}
 

@@ -21,7 +21,7 @@
         }
     }
     function _system_setindex($function){
-     system_setsetting("index", $function);
+		system_setsetting("index", $function);
     }
 	function system_getplugins(){
 		$plugins = system_getsetting("plugins");
@@ -29,43 +29,47 @@
 	}
 
 	function system_getsetting($setting){
-		$query = db_select("*", "system_settings", array("setting" => $setting));
+		$query = new Select("system_settings");
+		$query->where("setting", $setting);
+		$query->execute();
 
-		while($row = db_grab($query)){
+		foreach($query->fetch() as $row){
 			return $row['value'];
 		}
 	}
 
     function _system_removeuser($userid){
         if(system_getuserinfo(system_currentuser(), "role") == 2){
-            db_delete("users", array(
-                "user_id" => $userid
-            ), 1);
+            $delete = new Delete("users");
+			$delete->where("user_id", $userid);
+			$delete->execute();
         }
     }
 
 	function system_setsetting($setting, $value){
-		$db_value = array( "value" => $value);
-		$db_where = array("setting" => $setting);
-		db_update("system_settings", $db_value, $db_where);
+		$update = new Update("system_settings");
+		$update->where("setting", $setting);
+		$update->update("value", $value);
+		$update->execute();
 	}
 
 	function system_newsetting($setting, $defaultvalue){
-		db_insert("system_settings", array("value" => $defaultvalue));
+		$insert = new Insert("system_settings");
+		$insert->insert("value", $defaultvalue);
+		$insert->execute();
 	}
 
-	function system_login($username, $password){
-		$_username = db_escape($username);
-		$_password = db_escape($password);
+	function system_login($_username, $_password){
 		$_password = system_password_salt($_password, $_username, system_getuserinfo($_username, "registrationdate"), system_getuserinfo($_username, "email"));
 
-		$query = db_select("user_id", "users", array(
-			"username" => $_username,
-			"password" => $_password
-		));
+		$query = new Select("users");
+		$query->select("user_id");
+		$query->where("username", $_username);
+		$query->where("password", $_password);
+		$query->execute();
 
-		if(db_numrows($query) == 1){
-			while($row = db_grab($query)){
+		if($query->numrows() == 1){
+			foreach($query->fetch() as $row){
 				$_SESSION['login'] = $row['user_id'];
 				return 1;
 			}
@@ -92,14 +96,14 @@
 
 	function system_getuserinfo($username, $info){
 		if (!preg_match('#[0-9]#',$username)){
-			$_info = db_escape($info);
-			if($_info != "password"){
-				$query = db_select($_info, "users", array(
-					"username" => db_escape($username)
-				));
+			if($info != "password"){
+				$query = new Select("users");
+				$query->select($info);
+				$query->where("username", $username);
+				$query->execute();
 
-				while($row = db_grab($query)){
-					$result =  $row[$_info];
+				foreach($query->fetch() as $row){
+					$result = $row[$info];
 				}
 
 				if(isset($result)){
@@ -114,15 +118,14 @@
 			}
 		}
 		else{
+			if($info != "password"){
+				$query = new Select("users");
+				$query->select($info);
+				$query->where("user_id", $username);
+				$query->execute();
 
-			$_info = db_escape($info);
-			if($_info != "password"){
-				$query = db_select($_info, "users", array(
-					"user_id" => db_escape($username)
-				));
-
-				while($row = db_grab($query)){
-					$result =  $row[$_info];
+				foreach($query->fetch() as $row){
+					$result =  $row[$info];
 				}
 
 				if(isset($result)){
@@ -139,23 +142,27 @@
 	}
 
 	function system_getusers(){
-		return db_select("username, user_id", "users");
+		$query = new Select("users");
+		$query->select("username");
+		$query->select("user_id");
+		$query->execute();
+
+		return $query;
 	}
 
     function system_setuserinfo($user, $setting, $value){
-        db_update("users", array(
-            $setting => $value
-        ), array(
-            "user_id" => $user
-        ));
+        $update = new Update("users");
+		$update->update($setting, $value);
+		$update->where("userid", $user);
+		$update->execute();
     }
 
 	function system_getuserstats($stat){
-		$_stat = db_escape($stat);
-		if($_stat == "registered"){
-			$query = db_select("user_id", "users");
+		if($stat == "registered"){
+			$query = new Select("users");
+			$query->execute();
 
-			return db_numrows($query);
+			return $query->numrows();
 		}
 	}
 
@@ -191,10 +198,11 @@
 
 	function system_register($_username, $_password, $_email, $admin = "no"){
 		$_date = date("Y-m-d H:i:s");
-		$query = db_select("user_id", "users", array(
-			"username" => $_username
-		));
-		if(db_numrows($query) == 0){
+		$query = new Select("users");
+		$query->select("user_id");
+		$query->where("username", $_username);
+
+		if($query->numrows() == 0){
             if($admin == "no"){
 			     $_password = system_password_salt($_password, $_username, $_date, $_email);
 			     $default_role = system_getsetting("default_role");
@@ -209,13 +217,15 @@
             }
             else{
                  $_password = system_password_salt($_password, $_username, $_date, $_email);
-			     db_insert("users", array(
-			     	"username" => $_username,
-			     	"password" => $_password,
-			     	"email" => $_email,
-			     	"registrationdate" => $_date,
-			     	"role" => 2
-			     ));
+
+			     new Insert("users");
+				 $insert->insert("username", $_username);
+				 $insert->insert("password", $_password);
+				 $insert->insert("email", $_email);
+				 $insert->insert("date", $_date);
+				 $insert->insert("role", 2);
+				 $insert->execute();
+
 			     header("location: admin.php?loginform");
             }
 		}

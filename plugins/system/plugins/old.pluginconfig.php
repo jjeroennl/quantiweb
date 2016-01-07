@@ -35,7 +35,7 @@
 							</div>
 							<div class="modal-footer ">
 								<button type="button" class="btn btn" data-dismiss="modal">Cancel</button>
-								<a href="admin.php?p=' . db_escape($_GET['p']) . '&activate=' . $plugin . '" class="btn btn-default">Activate</a>
+								<a href="admin.php?p=' . strip_tags($_GET['p']) . '&activate=' . $plugin . '" class="btn btn-default">Activate</a>
 
 							</div>
 							</div>
@@ -73,19 +73,19 @@
 	}
 
 	if(isset($_GET['activate'])){
-		system_setsetting("plugins", system_getsetting("plugins") . "," . db_escape($_GET['activate']));
-		include 'plugins/' . db_escape($_GET['activate']) . '/index.php';
-		$function = db_escape($_GET['activate']) . "_install";
+		system_setsetting("plugins", system_getsetting("plugins") . "," . strip_tags($_GET['activate']));
+		include 'plugins/' . strip_tags($_GET['activate']) . '/index.php';
+		$function = strip_tags($_GET['activate']) . "_install";
 
 		if(function_exists($function)){
 			$function();
 		}
-		header("Location: admin.php?p=" . db_escape($_GET['p']));
+		header("Location: admin.php?p=" . strip_tags($_GET['p']));
 	}
 
 	if(isset($_GET['disable'])){
-		system_setsetting("plugins", str_replace(db_escape(",". $_GET['disable']), "", system_getsetting("plugins")));
-		header("Location: admin.php?p=". db_escape($_GET['p']));
+		system_setsetting("plugins", str_replace(strip_tags(",". $_GET['disable']), "", system_getsetting("plugins")));
+		header("Location: admin.php?p=". strip_tags($_GET['p']));
 	}
 
 	$plugins = system_getplugins();
@@ -180,7 +180,7 @@
 
 											}
 											else{
-												echo'<li class="read-more"><a href="admin.php?p=' . db_escape($_GET['p']) . '&disable=' . $installed_plugin . '" class="btn">Disable</a></li>';
+												echo'<li class="read-more"><a href="admin.php?p=' . strip_tags($_GET['p']) . '&disable=' . $installed_plugin . '" class="btn">Disable</a></li>';
 											}
 											echo '
 										</ul>

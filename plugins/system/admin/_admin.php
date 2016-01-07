@@ -1,14 +1,14 @@
 <?php
 	function admin_addpage($name, $function, $icon = "cog"){
-		if(!db_entry_exist("admin", array(
+		if(!dbEntryExist("admin", array(
 			"name" => $name,
 			"function" => $function
 		))){
-			db_insert("admin", array(
-				"name" => $name,
-				"function" => $function,
-				"icon" => $icon
-			));
+			$insert = new Insert("admin");
+			$insert->insert("name", $name);
+			$insert->insert("function", $function);
+			$insert->insert("icon", $icon);
+			$insert->execute();
 		}
 	}
 
@@ -40,7 +40,7 @@
 		$mvc->set_var('$datum', date("Y-m-d"));
 
 		$content = content_query(00, "loop");
-		$num = db_numrows($content);
+		$num = $content->numrows();
 		if($num == 1){
 			$posts = " post ";
 			$isare = "is";
@@ -67,7 +67,8 @@
 			return;
 		}
 		if(isset($_SESSION['login'])){
-			$query = db_select("*", "admin");
+			$query = new Select("admin");
+			$query->execute();
 
 			if(!isset($_GET['p'])){
 				echo "<li class=\"active\"><a href=\"admin.php\"><i class=\"fa fa-home\"></i></a></li>";
@@ -76,7 +77,7 @@
 				echo "<li ><a href=\"admin.php\"><i class=\"fa fa-home\"></i></a></li>";
 			}
 
-			while($row = db_grab($query)){
+			foreach($query->fetch() as $row){
 				if($row['name'] != "Plugins" && $row['name'] != "Settings" && $row['name'] != "Themes"){
 					if(function_exists($row['function'])){
 						if(!isset($_GET['p'])){
@@ -118,16 +119,14 @@
 		}
 	}
 
-	function admin_loadpage($id){
+	function admin_loadpage($_id){
+		$query = new Select("admin");
+		$query->where("admin_id", $_id);
+		$query->execute();
 
-		$_id = db_escape($id);
-		$query = db_select("*", "admin", array(
-			"admin_id" => $_id
-		));
-
-		if(db_numrows($query) == 1){
-			while($row = db_grab($query)){
-				$function = $row['function'];
+		if($query->numrows() == 1){
+			foreach($query->fetch() as $row){
+			$function = $row['function'];
 				if(function_exists($function)){
 					$send = 1;
 					$pagename = $row['name'];
