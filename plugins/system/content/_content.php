@@ -232,40 +232,37 @@
     }
 
 	function content_add($title, $content, $author, $status, $type){
-
-
-		db_insert("content", array(
-			"title" => $title,
-			"content" => $content,
-			"author" => $author,
-			"status" => $status,
-			"type" => $type
-		));
+		$insert = new Insert("content");
+		$insert->insert("title", $title);
+		$insert->insert("content", $content);
+		$insert->insert("author", $author);
+		$insert->insert("status", $status);
+		$insert->insert("type", $type);
+		$insert->execute();
 	}
 
 	function content_modify($id, $content){
-		db_update("content", array(
-			"content" => $content
-		), array(
-			"content_id" => $id
-		));
-
+		$update = new Update("content");
+		$update->update("content", $content);
+		$update->where("content_id", $id);
+		$update->execute();
 	}
 
 	function content_readmore($id){
 		return '<a href="?p=' . $id . '">Read more...</a>';
 	}
 
-	function content_modify_info($id, $info){
-		db_update("content", $info, array(
-			"content_id" => $id
-		));
+	function content_modify_info($id, $info, $value){
+		$update = new Update("content");
+		$update->update($info,$value);
+		$update->where("content_id", $id);
+		$update->execute();
 	}
 
 	function content_delete($id){
-		db_delete("content", array(
-			"content_id" => $id
-		),1);
+		$delete = new Delete("content");
+		$delete->where("content_id", $id);
+		$delete->execute();
 	}
 
 	function content_nav(){

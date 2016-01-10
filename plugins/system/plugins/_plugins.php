@@ -1,21 +1,4 @@
 <?php
-    function plugin_install($plugin, $function)
-    {
-        $installed_plugins = system_getplugins();
-
-        if (!in_array($plugin, $installed_plugins)) {
-            $curplugin = system_getsetting('plugins');
-            if ($curplugin != '') {
-                $newplugin = $curplugin.','.$plugin;
-            } else {
-                $newplugin = $plugin;
-            }
-
-            db_update('system_settings', array('value' => $newplugin), array('setting' => 'plugins'));
-            $function();
-        }
-    }
-
     function plugins_load()
     {
 		$allplugins = new Select("system_settings");
@@ -142,9 +125,9 @@
         $containsbad = array();
 
         $bad_words = array(
-                'db' => '1',
+                'new select' => '1',
                 'system_' => '0',
-                'db_delete' => '6',
+                'new delete' => '6',
                 'content_' => '1',
                 'exec(' => '7',
                 'passthru' => '7',
@@ -177,9 +160,9 @@
 
     function plugin_explain($badword){
         $explain = array(
-            'db' => 'Read and write from/to your database system',
+            'new select' => 'Read and write from/to your database system',
             'system_' => 'Use system functions',
-            'db_delete' => 'Delete entries in your database system',
+            'new delete' => 'Delete entries in your database system',
             'content_' => 'Read, write or delete content',
             'exec(' => 'Execute commands on your server',
             'passthru' => 'Execute commands on your server without verification',

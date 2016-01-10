@@ -62,22 +62,6 @@
 			$this->offset = $offset;
 		}
 
-		function db_testconnection(){
-			try {
-				$username = DB_USER;
-				$password = DB_PASSWORD;
-				$hostname = DB_HOST;
-				$database = DB_NAME;
-
-				$con = new PDO('mysql:host=' . $hostname . ';dbname=' . $database, $username, $password);
-
-				return $con;
-			}
-			catch (PDOException $e) {
-				return "FAILED";
-			}
-		}
-
 		function getVars(){
 			$queryvars = array();
 

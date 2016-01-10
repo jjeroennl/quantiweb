@@ -8,7 +8,7 @@
 		content_create_type("Sport", "nieuws_getcomments", 1, 1);
 
 		system_setindex("nieuws_index");
-		admin_addpage("Nieuws", "nieuws_admin", "puzzle-piece");
+		admin_addpage("Nieuws", "nieuws_admin", "newspaper-o");
 
 		if(dbTableExist("nieuws_comments") == 0){
 			$createTable = new Create("nieuws_comments", "comment_id");

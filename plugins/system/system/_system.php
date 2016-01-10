@@ -14,10 +14,10 @@
     function system_setindex($function){
         if(system_getsetting("index") == ""){
             system_setsetting("index", $function);
-            system_setsetting("wantindex", $function);
+            system_setsetting("indexRequest", $function);
         }
         else{
-            system_setsetting("wantindex", system_getsetting("wantindex") . "," . $function);
+            system_setsetting("indexRequest", system_getsetting("indexRequest") . "," . $function);
         }
     }
     function _system_setindex($function){
@@ -196,7 +196,7 @@
 		}
 	}
 
-	function system_register($_username, $_password, $_email, $admin = "no"){
+	function system_register($_username, $_password, $_email, $admin = "no", $redirect = true){
 		$_date = date("Y-m-d H:i:s");
 		$query = new Select("users");
 		$query->select("user_id");
@@ -206,31 +206,39 @@
             if($admin == "no"){
 			     $_password = system_password_salt($_password, $_username, $_date, $_email);
 			     $default_role = system_getsetting("default_role");
-			     db_insert("users", array(
-			     	"username" => $_username,
-			     	"password" => $_password,
-			     	"email" => $_email,
-			     	"registrationdate" => $_date,
-			     	"role" => $default_role
-			     ));
-			     header("location: admin.php?loginform");
+
+				 $insert = new Insert("users");
+				 $insert->insert("username", $_username);
+				 $insert->insert("password", $_password);
+				 $insert->insert("email", $_email);
+				 $insert->insert("registrationdate", $_date);
+				 $insert->insert("role", $default_role);
+				 $insert->execute();
+
+				 if($redirect == "true"){
+					 header("location: admin.php?loginform");
+				 }
             }
             else{
                  $_password = system_password_salt($_password, $_username, $_date, $_email);
 
-			     new Insert("users");
+			     $insert = new Insert("users");
 				 $insert->insert("username", $_username);
 				 $insert->insert("password", $_password);
 				 $insert->insert("email", $_email);
-				 $insert->insert("date", $_date);
+				 $insert->insert("registrationdate", $_date);
 				 $insert->insert("role", 2);
 				 $insert->execute();
 
-			     header("location: admin.php?loginform");
-            }
+				 if($redirect == "true"){
+					 header("location: admin.php?loginform");
+				 }
+			 }
 		}
 		else{
-			header("location: admin.php?loginform&registerfailed");
+			if($redirect == "true"){
+				header("location: admin.php?loginform&registerfailed");
+			}
 		}
 	}
 

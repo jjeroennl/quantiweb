@@ -22,18 +22,18 @@
 								if(isset($_GET['loginfailed'])){
 									echo '<div class="alert alert-danger" role="alert"><strong>Oh no!</strong> Something went wrong, please try again.</div>';
 								}
-							
+
 							?>
 							Username<br>
-							<input class="form-control" name="login-username" id="login-username" placeholder="" type="text">			
-							Password<br>			
+							<input class="form-control" name="login-username" id="login-username" placeholder="" type="text">
+							Password<br>
 		       				 <input class="form-control" name="login-password" id="login-password" placeholder="" type="password">
 							<button type="submit" class="btn pull-right">Login</button>
-							
-							
+
+
 						</form>
 							<?php
-								if(system_getsetting("allow_registration") == "1"){ 
+								if(system_getsetting("allowRegistration") == "1"){ 
 									echo '<a data-toggle="modal" data-target="#registermodal" class="register-link">Register a account</a>';
 									echo '
 											<div class="modal fade" id="registermodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -45,7 +45,7 @@
 															<h4 class="modal-title" id="myModalLabel"><i class="fa fa-user"></i> Register</h4>
 														</div>
 														<div class="modal-body">
-															
+
 																<input class="form-control" name="register-username" type="text" placeholder="Username" requied><br>
 																<input class="form-control" name="register-password" type="password" placeholder="Password" requied><br>
 																<input class="form-control" name="register-email" type="email" placeholder="Email" requied>
@@ -53,7 +53,7 @@
 														<div class="modal-footer">
 															<button type="button" class="btn btn" data-dismiss="modal">Cancel</button>
 															<button type="submit" class="btn btn-default">Register</button>
-															
+
 														</div>
 														</div>
 													</div>

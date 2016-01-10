@@ -28,7 +28,7 @@
   define('OFFICIAL_NAME', 'Quantiweb');
   define('FORK_NAME', 'Quantiweb');
   define('OFFICIAL_VERSION', '0.02');
-  define('INSTALL_LOCATION', $url);
+  define('INSTALL_LOCATION', $url . "/");
   define('LOCAL_INSTALL_LOCATION', dirname('__FILENAME__'));
   $pagename = 'Setup';
   include 'plugins/system/setup/_setup.php';
@@ -46,7 +46,7 @@
 
           include 'plugins/system/db/_db.php';
 
-          if (db_testconnection() != 'FAILED') {
+          if (dbTestConnection() != 'FAILED') {
               $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()\'"';
               $charactersLength = strlen($characters);
               $length = 28;
@@ -83,17 +83,18 @@
               $file = fopen('config.php', 'w');
               if ($file === false) {
                   $part = 'dbfailed';
-                  $_SESSION['db'] = 1;
               }
-              if (fwrite($file, $data)) {
-                  $part = 2;
-                  $_SESSION['db'] = 1;
-                  header('location: setup.php?user_setup');
-              } else {
-                  $part = 'dbfailed';
-                  $_SESSION['db'] = 1;
-                  header('location: setup.php?user_setup');
-              }
+			  else{
+				  if (fwrite($file, $data)) {
+					  $part = 2;
+					  $_SESSION['db'] = 1;
+					  header('location: setup.php?user_setup');
+				  } else {
+					  $part = 'dbfailed';
+					  $_SESSION['db'] = 1;
+					  header('location: setup.php?user_setup');
+				  }
+			  }
               fclose($file);
           } else {
 			  header('location: setup.php?dbfail');
@@ -117,133 +118,108 @@
 	  }
 
       //create system settings DB
-      db_create('system_settings', array(
-          'setting' => 'TEXT',
-          'value' => 'TEXT',
-          'setting_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'setting_id');
+	  $systemSettings = new Create("system_settings", "setting_id");
+	  $systemSettings->addRow("setting", "text");
+	  $systemSettings->addRow("value", "text");
+	  $systemSettings->addRow("setting_id", "int", "not null auto_increment");
+	  $systemSettings->execute();
 
-      db_insert('system_settings', array(
-              'setting' => 'websitename',
-              'value' => $_POST['websitename'],
-          ));
+	  //insert default settings
+	  $systemSettingsInserts = array(
+		  "websitename" => $_POST['websitename'],
+		  "websiteslogan" => $_POST['websiteslogan'],
+		  "plugins" => '!system,!admin,!settings,!content,!theme,!quantimvc',
+		  "index" => "",
+		  "indexRequest" => "",
+		  "postPerPage" => "10",
+		  "allowRegistration" => "0",
+		  "defaultRole" => "0",
+		  "theme" => "solid",
+		  "timeformat" => "H:i:s",
+		  "dateformat" => "Y-m-d",
+	  );
 
-      db_insert('system_settings', array(
-              'setting' => 'websiteslogan',
-              'value' => $_POST['websiteslogan'],
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'default_db',
-              'value' => 'SYSTEM',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'plugins',
-              'value' => '!system,!admin,!settings,!content,!theme,!quantimvc',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'index',
-              'value' => '',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'wantindex',
-              'value' => '',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'c_perpage',
-              'value' => '10',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'allow_registration',
-              'value' => '0',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'default_role',
-              'value' => '0',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'theme',
-              'value' => 'solid',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'timeformat',
-              'value' => 'H:i:s',
-          ));
-      db_insert('system_settings', array(
-              'setting' => 'dateformat',
-              'value' => 'Y-m-d',
-          ));
+	  foreach($systemSettingsInserts as $setting=>$value){
+		  $insert = new Insert("system_settings");
+		  $insert->insert("setting", $setting);
+		  $insert->insert("value", $value);
+		  $insert->execute();
+	  }
 
       //create content DB
-      db_create('content', array(
-          'title' => 'TEXT',
-          'author' => 'INT',
-          'content' => 'TEXT',
-          'type' => 'INT',
-          'status' => 'INT DEFAULT 0',
-          'date' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          'views' => 'INT',
-          'content_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'content_id');
+      $content = new Create('content', "content_id");
+	  $content->addRow("title", "text");
+	  $content->addRow("author", "int");
+	  $content->addRow("content", "text");
+	  $content->addRow("type", "int");
+	  $content->addRow("status", "int", "default 0");
+	  $content->addRow("date", "timestamp", "default current_timestamp");
+	  $content->addRow("views", "int");
+	  $content->addRow("content_id", "int", "not null auto_increment");
+	  $content->execute();
 
-      //create users DB
-      db_create('users', array(
-          'username' => 'TEXT',
-          'password' => 'TEXT',
-          'email' => 'TEXT',
-          'role' => 'INT',
-          'registrationdate' => 'DATETIME',
-          'user_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'user_id');
+	  //create user DB
+      $user = new Create('users', "user_id");
+	  $user->addRow("username", "text");
+	  $user->addRow("password", "text");
+	  $user->addRow("email", "text");
+	  $user->addRow("role", "int");
+	  $user->addRow("registrationdate", "datetime");
+	  $user->addRow("user_id", "int");
+	  $user->execute();
 
       //register admin user
-      system_register($_POST['register-username'], $_POST['register-password'], $_POST['register-email'], 'ADMIN');
+      system_register($_POST['register-username'], $_POST['register-password'], $_POST['register-email'], 'ADMIN', false);
 
       //create admin DB
-      db_create('admin', array(
-          'name' => 'TEXT',
-          'function' => 'TEXT',
-          'icon' => 'TEXT',
-          'admin_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'admin_id');
+      $admin = new Create('admin', "admin_id");
+	  $admin->addRow("name", "text");
+	  $admin->addRow("function", "text");
+	  $admin->addRow("icon", "text");
+	  $admin->addRow("admin_id", "int", "not null auto_increment");
+	  $admin->execute();
 
-      db_insert('admin', array(
-              'name' => 'Plugins',
-              'function' => 'plugins_config',
-              'admin_id' => 2,
-          ));
+	  $adminInsert = new Insert("admin");
+	  $adminInsert->insert("name", "Plugins");
+	  $adminInsert->insert("function", "plugins_config");
+	  $adminInsert->insert("admin_id", 2);
+	  $adminInsert->execute();
 
-      db_insert('admin', array(
-              'name' => 'Settings',
-              'function' => 'settings_admin',
-              'admin_id' => 3,
-          ));
-      db_insert('admin', array(
-              'name' => 'Settings',
-              'function' => 'theme_admin',
-              'admin_id' => 4,
-          ));
+	  $adminInsert = new Insert("admin");
+	  $adminInsert->insert("name", "Settings");
+	  $adminInsert->insert("function", "settings_admin");
+	  $adminInsert->insert("admin_id", 3);
+	  $adminInsert->execute();
+
+	  $adminInsert = new Insert("admin");
+	  $adminInsert->insert("name", "Themes");
+	  $adminInsert->insert("function", "theme_admin");
+	  $adminInsert->insert("admin_id", 4);
+	  $adminInsert->execute();
+
       //create roles DB
-      db_create('role', array(
-          'role' => 'TEXT',
-          'role_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'role_id');
+      $role = new Create('role', "role_id");
+	  $role->addRow("role", "text");
+	  $role->addRow("role_id", "int", "not null auto_increment");
+	  $role->execute();
 
       //create content type database
-      db_create('content_types', array(
-          'type' => 'TEXT',
-          'menu' => 'INT',
-          'way' => 'INT',
-          'aditional' => 'TEXT',
-          'type_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'type_id');
+	  $contentTypes = new Create('content_types', "type_id");
+	  $contentTypes->addRow("type", "text");
+	  $contentTypes->addRow("menu", "int");
+	  $contentTypes->addRow("way", "int");
+	  $contentTypes->addRow("aditional", "text");
+	  $contentTypes->addRow("type_id", "int", "not null auto_increment");
+	  $contentTypes->execute();
 
       //create content metadata
-      db_create('content_metadata', array(
-          'content' => 'INT',
-          'metadata' => 'TEXT',
-          'value' => 'TEXT',
-          'meta_id' => 'INT NOT NULL AUTO_INCREMENT ',
-      ), 'meta_id');
+	  $contentMetadata = new Create('content_metadata', "meta_id");
+	  $contentMetadata->addRow("content", "int");
+	  $contentMetadata->addRow("metadata", "text");
+	  $contentMetadata->addRow("value", "text");
+	  $contentMetadata->addRow("meta_id", "int", "not null auto_increment");
+	  $contentMetadata->execute();
+
       $part = 3;
   }
 
@@ -254,21 +230,21 @@
   }
 
   $mvc->_("#create_error")->hide();
-
   if ($part == 1) {
       $mvc->_('#db_failed')->hide()->_('#part_2')->hide()->_('#part_3')->hide();
       $mvc->_('#forkname')->set_html(FORK_NAME);
-      $mvc->_('#f_location')->set_value($url);
+      $mvc->_('#f_location')->set_value($url . "/");
       $mvc->get_all();
   }
 
-  if ($part == 'dbfailed') {
+  elseif ($part == 'dbfailed') {
       $mvc->_('#db_failed_textarea')->set_html($data);
       $mvc->_('#part_1')->hide()->_('#part_2')->hide()->_('#part_3')->hide();
       $mvc->get_all();
+	  $_SESSION['db'] = 1;
   }
 
-  if ($part == 2) {
+  elseif ($part == 2) {
 	  if(array_key_exists("display_error", $_GET)){
 		 $mvc->_("#create_error")->show();
 	  }
@@ -276,7 +252,7 @@
       $mvc->get_all();
   }
 
-  if ($part == 3) {
+  elseif ($part == 3) {
       $mvc->_('#db_failed')->hide()->_('#part_1')->hide()->_('#part_2')->hide();
       $mvc->get_all();
   }
