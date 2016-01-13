@@ -176,6 +176,7 @@
 	  $admin->addRow("name", "text");
 	  $admin->addRow("function", "text");
 	  $admin->addRow("icon", "text");
+	  $admin->addRow("type", "text");
 	  $admin->addRow("admin_id", "int", "not null auto_increment");
 	  $admin->execute();
 

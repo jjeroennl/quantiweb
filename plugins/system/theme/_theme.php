@@ -35,7 +35,7 @@
 
 				$mvc->_("#panel-area")->append(new Panel("small", $themedata, "themes"));
 				if(system_getsetting("theme") != $themedata['name']){
-					$mvc->_("#enable" . $themedata['name'])->set_attribute("href", "admin.php?p=" . $_GET['p'] . "&activate=" . $themedata['name']);
+					$mvc->_("#enable" . $themedata['name'])->set_attribute("href", "admin.php?p=" . $_GET['p'] . "&settingspage=" . $_GET['settingspage'] . "&activate=" . $themedata['name']);
 				}
 		        unset($description);
 		        unset($author);
@@ -51,10 +51,61 @@
 		$mvc->get_all();
 	}
 
+	function theme_editor(){
+		$mvc = new Mvc("themeedit.qhtml", __FILE__);
+		// $mvc->add_controller("theme_getsteps");
+		// if(isset($_COOKIE['step1_name'])){
+		// 	$mvc->_("#part1")->hide();
+		// }
+		$mvc->_("#panel-area")->hide();
+		echo "Comming soon!";
+		$mvc->get_all();
+	}
+
+	function theme_getsteps($data){
+		if(!isset($_COOKIE['step1_name'])){
+			theme_editor_step1();
+		}
+	}
+
+	function theme_editor_step1(){
+		ini_set('display_errors', '1');
+		if(!isset($_FILES['zipfile'])){
+			return;
+		}
+		$target_dir =  __DIR__ . "/tmp/" . $_POST['themename'];
+		$target_file = __DIR__ . "/tmp/" . $_POST['themename'] . ".zip";
+		$uploadOk = 1;
+		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+		// Check if image file is a actual image or fake image
+		if(isset($_POST["submit"])) {
+			if($imageFileType != "zip") {
+				$uploadOk = 0;
+			}
+			if ($uploadOk == 1) {
+				$moved = move_uploaded_file($_FILES["zipfile"]["tmp_name"], $target_file);
+				if( $moved ) {
+					$zip = new ZipArchive;
+					$zip->open($target_file);
+					$zip->extractTo($target_dir);
+					$zip->close();
+					setcookie("step1_name", $_POST['themename'], time()+86400);
+					setcookie("step1_target", $target_dir, time()+86400);
+					header("location:" . settings_get_url());
+				} else {
+  					echo "<div class=\"panel huge error\">Not uploaded because of error #".$_FILES["zipfile"]["error"] . "</div>";
+				}
+			}
+			else{
+				die($imageFileType . "is niet geldig");
+			}
+		}
+	}
+
 	function theme_activate($data){
 		if(isset($data['activate'])){
 			system_setsetting("theme", $data['activate']);
-			header("location: admin.php?p=" . $data['p']);
+			header("location: admin.php?p=" . $data['p'] . "&settingspage=" . $_GET['settingspage']);
 		}
 	}
 ?>

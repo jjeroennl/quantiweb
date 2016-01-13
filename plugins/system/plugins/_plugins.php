@@ -61,11 +61,11 @@
 
 			if($plugindata['installed'] != 1){
 				$mvc->_("#modelarea_" . $plugindata['name'])->append(new Modal("activate" . $plugindata['name'], ucfirst($plugindata['name']),plugins_activateInfo($plugindata['name']), '<a class="button" id="activatelink' . $plugindata['name'] .'">Activate</a>'));
-				$mvc->_("#activatelink" . $plugindata['name'])->set_attribute("href", '?p=' . $_GET['p'] .'&activate=' .  $plugindata['name']);
+				$mvc->_("#activatelink" . $plugindata['name'])->set_attribute("href", '?p=' .$_GET['p'] . '&settingspage=' . $_GET['settingspage'].'&activate=' .  $plugindata['name']);
 			}
 			else{
 				$mvc->_("#modelarea_" . $plugindata['name'])->append(new Modal("disable" . $plugindata['name'], ucfirst($plugindata['name']), "Are you sure you want do disable " . ucfirst($plugindata['name']) . "?", '<a class="button" id="disablelink' . $plugindata['name'] .'">Disable</a>'));
-				$mvc->_("#disablelink" . $plugindata['name'])->set_attribute("href", '?p=' . $_GET['p'] .'&disable=' .  $plugindata['name']);
+				$mvc->_("#disablelink" . $plugindata['name'])->set_attribute("href", '?p=' . $_GET['p'] . '&settingspage=' . $_GET['settingspage'] . '&disable=' .  $plugindata['name']);
 			}
 
 
@@ -86,11 +86,11 @@
 			if(function_exists($function)){
 				$function();
 			}
-			header("Location: admin.php?p=" . strip_tags($_GET['p']));
+			header("Location: admin.php?p=". strip_tags($data['p']) . "&settingspage=" . strip_tags($_GET['settingspage']));
 		}
 		if(isset($data['disable'])){
 			system_setsetting("plugins", str_replace(strip_tags(",". $data['disable']), "", system_getsetting("plugins")));
-			header("Location: admin.php?p=". strip_tags($data['p']));
+			header("Location: admin.php?p=". strip_tags($data['p']) . "&settingspage=" . strip_tags($_GET['settingspage']));
 		}
 	}
 

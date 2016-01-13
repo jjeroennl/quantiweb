@@ -55,6 +55,10 @@ body {
     position: fixed;
     bottom: 0px;
 }
+.noline{
+	text-decoration: none;
+	color: rgb(0, 0, 0);
+}
 .menu .active {
     background-color: rgb(86, 111, 143);
 }
@@ -90,6 +94,10 @@ body {
 
 .align-left{
 	float: left;
+}
+
+.text-align-left{
+	text-align: left;
 }
 
 .panel-area {
@@ -279,7 +287,15 @@ input[type="text"]{
 	margin-top: 10px;
 	margin-bottom: 10px;
 	font-size: 16px;
+}
 
+input[type="file"]{
+	height: 25px;
+	padding: 5px;
+	width: 98%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
 }
 
 input[type="password"]{

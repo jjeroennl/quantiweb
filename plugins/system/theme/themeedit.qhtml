@@ -1,0 +1,20 @@
+<div class="panel-area" id="panel-area">
+	<div id="part1">
+		<panel huge>
+			<h3>Welcome to the theme creator!</h3>
+			<p>The theme creator enables you to create Quantiweb themes from HTML with no knowledge of PHP or databases.</p>
+
+			<h3>Step 1</h3>
+			<h4>Give a name for your theme (this must be unique!)</h4>
+			<form  method="post" enctype="multipart/form-data">
+				<input name="themename" type="text" placeholder="Theme name"><br><br>
+
+			<h4>Upload a zip containing all the files of your html site (homepage, normal page, stylesheets, etc)</h4>
+				<input name="zipfile" type="file"><br><br>
+				<input name="submit" type="submit">
+			</form>
+		</panel>
+	</div>
+	<script>
+	</script>
+</div>

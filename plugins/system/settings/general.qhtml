@@ -1,20 +1,24 @@
 <panel huge>
-	<form method="post">
-		<h4>Website info</h4>
-		<input class="form-control" name="websitename" placeholder="Websitename" ></input>
-		<input  name="slogan" placeholder="Slogan"></input>
-		<h4>User settings</h4>
-			<input name="allowregistration" type="checkbox"></input>
-			<label for="allowregistration">Allow registration</label>
-			 Default userrole:
-			<select name="defaultrole" class="form-control">
-				<option>Admin</option>
-				<option>Contributor</option>
-				<option>Writer</option>
-				<option>Subscriber</option>
-			</select>
-			<h4>Time</h4>
+		<form method="post">
+			<div class="fullwidth text-align-left">
+			<h3>Website info</h3>
+				<input type="text" id="websitename" name="websitename" placeholder="Websitename" ></input>
+				<input type="text" id="slogan" name="slogan" placeholder="Slogan"></input>
+				<h3>User settings</h3>
+				<input name="allowregistration" id="allowregistration" type="checkbox"></input>
+				<label for="allowregistration">Allow registration</label><br>
+				Default userrole:
+				<select name="defaultrole" class="form-control">
+					<option>Admin</option>
+					<option>Contributor</option>
+					<option>Writer</option>
+					<option>Subscriber</option>
+				</select>
+				<h3>Time</h3>
+				<input type="text" id="timeformat" name="timeformat" placeholder="Timeformat" ></input>
+				<input type="text" id="dateformat" name="dateformat" placeholder="Dateformat" ></input>
+				<input class="btn" name="generalpost" type="submit" value="Send"></input>
+			</div>
 
-			<input class="btn" name="generalpost" type="submit" value="Send"></input>
-	</form>
+		</form>
 </panel>

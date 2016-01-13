@@ -98,14 +98,7 @@
     }
 
     function hide(){
-		$this->__give_element()->setAttribute("style", str_replace("display: block;", "", $this->__give_element()->getAttribute("style")));
-        $this->__give_element()->setAttribute("style", $this->__give_element()->getAttribute("style") .  "display: none;");
-        return $this;
-    }
-
-    function show(){
-		$this->__give_element()->setAttribute("style", str_replace("display: none;", "", $this->__give_element()->getAttribute("style")));
-        $this->__give_element()->setAttribute("style", $this->__give_element()->getAttribute("style") .  "display: block;");
+		$this->__give_element()->parentNode->removeChild($this->__give_element());
         return $this;
     }
 

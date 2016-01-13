@@ -8,6 +8,7 @@
 			$insert->insert("name", $name);
 			$insert->insert("function", $function);
 			$insert->insert("icon", $icon);
+			$insert->insert("type", "page");
 			$insert->execute();
 		}
 	}
@@ -68,6 +69,7 @@
 		}
 		if(isset($_SESSION['login'])){
 			$query = new Select("admin");
+			$query->where("type", "page");
 			$query->execute();
 
 			if(!isset($_GET['p'])){
@@ -94,19 +96,6 @@
 			}
 			if(!isset($_GET['p'])){
 				$_GET['p'] = 1;
-			}
-			if($_GET['p'] == 4){
-				echo "<li class=\"active\"><a href=\"admin.php?p=4\"><i class=\"fa fa-paint-brush\"></i></a></li>";
-			}
-			else{
-				echo "<li><a href=\"admin.php?p=4\"><i class=\"fa fa-paint-brush\"></i></a></li>";
-			}
-
-			if($_GET['p'] == 2){
-            	echo "<li class=\"active\"><a href=\"admin.php?p=2\"><i class=\"fa fa-puzzle-piece\"></i></a></li>";
-			}
-			else{
-				echo "<li><a href=\"admin.php?p=2\"><i class=\"fa fa-puzzle-piece\"></i></a></li>";
 			}
 
 			if($_GET['p'] == 3){
